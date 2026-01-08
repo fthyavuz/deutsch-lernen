@@ -1,5 +1,7 @@
 package com.fatih.germanapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,5 +43,7 @@ public class QuizQuestion {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")
+    @JsonIgnoreProperties({ "vocabularies", "quizQuestions" })
     private Lesson lesson;
+
 }

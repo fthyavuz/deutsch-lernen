@@ -1,5 +1,7 @@
 package com.fatih.germanapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,5 +32,7 @@ public class ExampleSentence {
 
     @ManyToOne
     @JoinColumn(name = "vocabulary_id")
+    @JsonIgnoreProperties("exampleSentences")
     private Vocabulary vocabulary;
+
 }

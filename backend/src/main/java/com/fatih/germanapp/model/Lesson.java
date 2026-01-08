@@ -2,6 +2,8 @@ package com.fatih.germanapp.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,8 +34,11 @@ public class Lesson {
     private int lessonOrder; // for ordering lessons
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("lesson")
     private List<Vocabulary> vocabularies;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("lesson")
     private List<QuizQuestion> quizQuestions;
+
 }

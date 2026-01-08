@@ -16,6 +16,8 @@ import jakarta.persistence.CascadeType;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "vocabulary")
 @Getter
@@ -34,11 +36,13 @@ public class Vocabulary {
 
     private String germanExplanation; // in ein Fahrzeug gehen
     private String relatedWords; // Bus, Zug
-
     @ManyToOne
     @JoinColumn(name = "lesson_id")
+    @JsonIgnoreProperties({ "vocabularies", "quizQuestions" })
     private Lesson lesson;
 
     @OneToMany(mappedBy = "vocabulary", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("vocabulary")
     private List<ExampleSentence> exampleSentences;
+
 }
