@@ -1,4 +1,4 @@
-package com.fatih.germanapp.controller;
+package com.fatih.germanapp.dto;
 
 import com.fatih.germanapp.model.ExampleSentence;
 import com.fatih.germanapp.model.Vocabulary;

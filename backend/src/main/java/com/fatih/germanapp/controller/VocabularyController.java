@@ -2,6 +2,7 @@ package com.fatih.germanapp.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fatih.germanapp.dto.VocabularyDTO;
 import com.fatih.germanapp.model.ExampleSentence;
 import com.fatih.germanapp.model.Vocabulary;
 import com.fatih.germanapp.repository.ExampleSentenceRepository;

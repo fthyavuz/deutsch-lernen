@@ -1,4 +1,4 @@
-package com.fatih.germanapp.model;
+package com.fatih.germanapp.dto;
 
 public enum Role {
     STUDENT,
