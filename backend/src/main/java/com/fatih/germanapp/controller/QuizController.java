@@ -4,10 +4,14 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fatih.germanapp.dto.QuizQuestionResponseDTO;
+import com.fatih.germanapp.dto.QuizSubmitRequestDTO;
+import com.fatih.germanapp.dto.QuizSubmitResponse;
 import com.fatih.germanapp.model.QuizQuestion;
 import com.fatih.germanapp.repository.QuizQuestionRepository;
 
@@ -36,4 +40,16 @@ public class QuizController {
             return dto;
         }).toList();
     }
+
+    @PostMapping("/submit")
+    public QuizSubmitResponse submitQuiz(@RequestBody QuizSubmitRequestDTO request) {
+        QuizQuestion quizQuestion = quizQuestionRepository.findById(request.getQuestionId())
+                .orElseThrow(() -> new RuntimeException("Quiz question not found"));
+        QuizSubmitResponse response = new QuizSubmitResponse();
+        response.setQuestionId(request.getQuestionId());
+        response.setCorrectAnswer(quizQuestion.getCorrectAnswer());
+        response.setCorrect(request.getSelectedAnswer().equals(quizQuestion.getCorrectAnswer()));
+        return response;
+    }
+
 }

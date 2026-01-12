@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fatih.germanapp.dto.LessonSummaryResponseDTO;
 import com.fatih.germanapp.model.Lesson;
 import com.fatih.germanapp.repository.LessonRepository;
 
@@ -20,7 +21,15 @@ public class LessonController {
     }
 
     @GetMapping
-    public List<Lesson> getAllLessons() {
-        return lessonRepository.findAllByOrderByLessonOrderAsc();
+    public List<LessonSummaryResponseDTO> getAllLessons() {
+        List<Lesson> lessons = lessonRepository.findAllByOrderByLessonOrderAsc();
+        return lessons.stream().map(lesson -> {
+            LessonSummaryResponseDTO dto = new LessonSummaryResponseDTO();
+            dto.setId(lesson.getId());
+            dto.setTitle(lesson.getTitle());
+            dto.setDescription(lesson.getDescription());
+            dto.setLessonOrder(lesson.getLessonOrder());
+            return dto;
+        }).toList();
     }
 }
