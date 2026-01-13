@@ -1,0 +1,19 @@
+package com.fatih.germanapp.controller;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class AdminVocabularyRequestDTO {
+
+    private Long lessonId;
+
+    private String germanWord;
+    private String englishMeaning;
+    private String turkishMeaning;
+
+    private String germanExplanation;
+    private String relatedWords;
+
+}

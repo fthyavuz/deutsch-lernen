@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fatih.germanapp.dto.QuizQuestionResponseDTO;
 import com.fatih.germanapp.dto.QuizSubmitRequestDTO;
-import com.fatih.germanapp.dto.QuizSubmitResponse;
+import com.fatih.germanapp.dto.QuizSubmitResponseDTO;
 import com.fatih.germanapp.model.QuizQuestion;
 import com.fatih.germanapp.repository.QuizQuestionRepository;
 
@@ -42,10 +42,10 @@ public class QuizController {
     }
 
     @PostMapping("/submit")
-    public QuizSubmitResponse submitQuiz(@RequestBody QuizSubmitRequestDTO request) {
+    public QuizSubmitResponseDTO submitQuiz(@RequestBody QuizSubmitRequestDTO request) {
         QuizQuestion quizQuestion = quizQuestionRepository.findById(request.getQuestionId())
                 .orElseThrow(() -> new RuntimeException("Quiz question not found"));
-        QuizSubmitResponse response = new QuizSubmitResponse();
+        QuizSubmitResponseDTO response = new QuizSubmitResponseDTO();
         response.setQuestionId(request.getQuestionId());
         response.setCorrectAnswer(quizQuestion.getCorrectAnswer());
         response.setCorrect(request.getSelectedAnswer().equals(quizQuestion.getCorrectAnswer()));

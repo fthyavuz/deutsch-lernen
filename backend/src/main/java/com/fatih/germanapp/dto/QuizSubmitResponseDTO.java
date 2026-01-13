@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class QuizSubmitResponse {
+public class QuizSubmitResponseDTO {
     private Long questionId;
 
     private String correctAnswer;
