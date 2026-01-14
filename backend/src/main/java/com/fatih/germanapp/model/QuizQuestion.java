@@ -1,6 +1,7 @@
 package com.fatih.germanapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fatih.germanapp.dto.QuizQuestionType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +30,7 @@ public class QuizQuestion {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private QuizType type;
+    private QuizQuestionType type;
 
     private String question;
 
