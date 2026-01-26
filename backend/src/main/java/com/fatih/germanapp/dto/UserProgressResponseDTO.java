@@ -1,5 +1,7 @@
 package com.fatih.germanapp.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +12,5 @@ public class UserProgressResponseDTO {
     private String LessonTitle;
     private int score;
     private boolean completed;
+    private LocalDateTime completedAt;
 }

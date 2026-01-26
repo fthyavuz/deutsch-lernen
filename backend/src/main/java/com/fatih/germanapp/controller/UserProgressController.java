@@ -1,5 +1,6 @@
 package com.fatih.germanapp.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,9 @@ public class UserProgressController {
         userProgress.setLesson(lesson);
         userProgress.setScore(request.getScore());
         userProgress.setCompleted(request.isCompleted());
+        if (userProgress.isCompleted()) {
+            userProgress.setCompletedAt(LocalDateTime.now());
+        }
 
         UserProgress savedUserProgress = userProgressRepository.save(userProgress);
         UserProgressResponseDTO dto = new UserProgressResponseDTO();
@@ -54,6 +58,7 @@ public class UserProgressController {
         dto.setLessonTitle(savedUserProgress.getLesson().getTitle());
         dto.setCompleted(savedUserProgress.isCompleted());
         dto.setScore(savedUserProgress.getScore());
+        dto.setCompletedAt(savedUserProgress.getCompletedAt());
         return dto;
     }
 
@@ -67,6 +72,7 @@ public class UserProgressController {
                     dto.setLessonTitle(progress.getLesson().getTitle());
                     dto.setCompleted(progress.isCompleted());
                     dto.setScore(progress.getScore());
+                    dto.setCompletedAt(progress.getCompletedAt());
                     return dto;
                 })
                 .toList();
