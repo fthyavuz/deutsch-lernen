@@ -7,8 +7,5 @@ import lombok.Setter;
 @Setter
 public class ProgressRequestDTO {
     private Long lessonId;
-    private Long userId;
     private int score;
-    private boolean completed;
-
 }

@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.security.core.Authentication;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,37 +35,54 @@ public class UserProgressController {
     }
 
     @PostMapping
-    public UserProgressResponseDTO saveProgress(@RequestBody ProgressRequestDTO request) {
-        User user = userRepository.findById(request.getUserId())
+    public UserProgressResponseDTO saveProgress(
+            @RequestBody ProgressRequestDTO request,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         Lesson lesson = lessonRepository.findById(request.getLessonId())
                 .orElseThrow(() -> new RuntimeException("Lesson not found"));
 
-        UserProgress userProgress = userProgressRepository
-                .findByUserIdAndLessonId(request.getUserId(), request.getLessonId())
+        UserProgress progress = userProgressRepository
+                .findByUserIdAndLessonId(user.getId(), lesson.getId())
                 .orElse(new UserProgress());
 
-        userProgress.setUser(user);
-        userProgress.setLesson(lesson);
-        userProgress.setScore(request.getScore());
-        userProgress.setCompleted(request.isCompleted());
-        if (userProgress.isCompleted()) {
-            userProgress.setCompletedAt(LocalDateTime.now());
+        progress.setUser(user);
+        progress.setLesson(lesson);
+        progress.setScore(request.getScore());
+
+        boolean completed = request.getScore() >= 70;
+        progress.setCompleted(completed);
+
+        if (completed && progress.getCompletedAt() == null) {
+            progress.setCompletedAt(LocalDateTime.now());
         }
 
-        UserProgress savedUserProgress = userProgressRepository.save(userProgress);
+        UserProgress saved = userProgressRepository.save(progress);
+
         UserProgressResponseDTO dto = new UserProgressResponseDTO();
-        dto.setLessonId(savedUserProgress.getLesson().getId());
-        dto.setLessonTitle(savedUserProgress.getLesson().getTitle());
-        dto.setCompleted(savedUserProgress.isCompleted());
-        dto.setScore(savedUserProgress.getScore());
-        dto.setCompletedAt(savedUserProgress.getCompletedAt());
+        dto.setLessonId(lesson.getId());
+        dto.setLessonTitle(lesson.getTitle());
+        dto.setCompleted(saved.isCompleted());
+        dto.setScore(saved.getScore());
+        dto.setCompletedAt(saved.getCompletedAt());
+
         return dto;
     }
 
-    @GetMapping("/user/{userId}")
-    public List<UserProgressResponseDTO> getUserProgress(@PathVariable Long userId) {
-        return userProgressRepository.findByUserId(userId)
+    @GetMapping("/me")
+    public List<UserProgressResponseDTO> getMyProgress(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userProgressRepository.findByUserId(user.getId())
                 .stream()
                 .map(progress -> {
                     UserProgressResponseDTO dto = new UserProgressResponseDTO();
@@ -76,6 +94,6 @@ public class UserProgressController {
                     return dto;
                 })
                 .toList();
-
     }
+
 }
