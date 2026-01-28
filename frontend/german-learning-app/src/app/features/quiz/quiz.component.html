@@ -1,0 +1,28 @@
+<div *ngIf="questions().length > 0 && !completed()">
+    <div class="quiz-question">
+        <h3>Q{{ currentIndex() + 1 }}: {{ questions()[currentIndex()].question }}</h3>
+        <ul>
+            <li *ngIf="questions()[currentIndex()].optionA"
+                (click)="submitAnswer(questions()[currentIndex()].optionA!)">
+                {{ questions()[currentIndex()].optionA }}
+            </li>
+            <li *ngIf="questions()[currentIndex()].optionB"
+                (click)="submitAnswer(questions()[currentIndex()].optionB!)">
+                {{ questions()[currentIndex()].optionB }}
+            </li>
+            <li *ngIf="questions()[currentIndex()].optionC"
+                (click)="submitAnswer(questions()[currentIndex()].optionC!)">
+                {{ questions()[currentIndex()].optionC }}
+            </li>
+            <li *ngIf="questions()[currentIndex()].optionD"
+                (click)="submitAnswer(questions()[currentIndex()].optionD!)">
+                {{ questions()[currentIndex()].optionD }}
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div *ngIf="completed()">
+    <h2>Quiz Completed! ✅</h2>
+    <p>Your score: {{ userScore() }} / {{ questions().length }}</p>
+</div>
