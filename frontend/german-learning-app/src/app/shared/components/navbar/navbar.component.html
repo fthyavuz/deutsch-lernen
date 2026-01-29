@@ -1,0 +1,14 @@
+<nav class="navbar">
+    <a routerLink="/" class="logo">🇩🇪 Deutsch Lernen</a>
+
+    <div class="links">
+        <a *ngIf="isLoggedIn()" routerLink="/">Lessons</a>
+
+        <a *ngIf="isAdmin()" routerLink="/admin">Admin</a>
+
+        <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
+        <a *ngIf="!isLoggedIn()" routerLink="/register">Register</a>
+
+        <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
+    </div>
+</nav>

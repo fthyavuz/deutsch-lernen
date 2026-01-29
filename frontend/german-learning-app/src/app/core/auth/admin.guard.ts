@@ -1,8 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AdminGuard {
-  
-}
+export const adminGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isLoggedInSignal() && authService.isAdmin()) {
+    return true;
+  }
+
+  router.navigate(['/']);
+  return false;
+};

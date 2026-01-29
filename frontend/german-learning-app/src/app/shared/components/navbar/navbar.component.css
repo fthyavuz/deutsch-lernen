@@ -1,0 +1,28 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: #222;
+    color: white;
+}
+
+.logo {
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+}
+
+.links a,
+.links button {
+    margin-left: 16px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.links a:hover,
+.links button:hover {
+    text-decoration: underline;
+}

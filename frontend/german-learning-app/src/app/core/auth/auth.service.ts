@@ -10,8 +10,7 @@ interface LoginRequest {
 
 interface LoginResponse {
   token: string;
-  // optional: backend could return role here too
-  role?: string;
+  role: 'ADMIN' | 'STUDENT';
 }
 
 interface RegisterRequest {
@@ -21,7 +20,7 @@ interface RegisterRequest {
 
 interface RegisterResponse {
   email: string;
-  role: string;
+  role: 'ADMIN' | 'STUDENT';
 }
 
 @Injectable({
@@ -34,15 +33,15 @@ export class AuthService {
   private readonly roleKey = 'userRole';
 
   // reactive login state
-  readonly isLoggedIn = signal<boolean>(false);
-  readonly userRole = signal<string | null>(null);
+  readonly isLoggedInSignal = signal<boolean>(false);
+  readonly userRoleSignal = signal<string | null>(null);
 
   constructor() {
     const token = this.getToken();
     const role = localStorage.getItem(this.roleKey);
 
-    this.isLoggedIn.set(!!token);
-    this.userRole.set(role);
+    this.isLoggedInSignal.set(!!token);
+    this.userRoleSignal.set(role);
   }
 
   register(request: RegisterRequest): Observable<RegisterResponse> {
@@ -52,7 +51,7 @@ export class AuthService {
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request).pipe(
       tap(response => {
-        this.setSession(response.token, response.role ?? null);
+        this.setSession(response.token, response.role);
       })
     );
   }
@@ -60,17 +59,17 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.roleKey);
-    this.isLoggedIn.set(false);
-    this.userRole.set(null);
+    this.isLoggedInSignal.set(false);
+    this.userRoleSignal.set(null);
   }
 
-  private setSession(token: string, role: string | null) {
+  private setSession(token: string, role: string) {
     localStorage.setItem(this.tokenKey, token);
     if (role) {
       localStorage.setItem(this.roleKey, role);
-      this.userRole.set(role);
+      this.userRoleSignal.set(role);
     }
-    this.isLoggedIn.set(true);
+    this.isLoggedInSignal.set(true);
   }
 
   getToken(): string | null {
@@ -78,7 +77,7 @@ export class AuthService {
   }
 
   getRole(): string | null {
-    return this.userRole();
+    return this.userRoleSignal();
   }
 
   isAdmin(): boolean {
