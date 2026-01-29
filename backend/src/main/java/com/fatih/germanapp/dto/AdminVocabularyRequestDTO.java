@@ -1,4 +1,4 @@
-package com.fatih.germanapp.controller;
+package com.fatih.germanapp.dto;
 
 import lombok.Getter;
 import lombok.Setter;

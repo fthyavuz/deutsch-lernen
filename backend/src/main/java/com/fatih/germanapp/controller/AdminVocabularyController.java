@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fatih.germanapp.repository.VocabularyRepository;
+import com.fatih.germanapp.dto.AdminVocabularyRequestDTO;
 import com.fatih.germanapp.dto.AdminVocabularyResponse;
 import com.fatih.germanapp.exception.ResourceNotFoundException;
 import com.fatih.germanapp.model.Lesson;
