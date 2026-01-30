@@ -6,6 +6,20 @@ export const adminRoutes: Routes = [
     {
         path: '',
         component: AdminDashboardComponent,
-        canActivate: [adminGuard]
+        canActivate: [adminGuard],
+        children: [
+            {
+                path: 'vocabulary',
+                loadChildren: () =>
+                    import('./pages/admin-vocabulary.routes')
+                        .then(m => m.adminVocabularyRoutes)
+            },
+            {
+                path: 'lessons',
+                loadChildren: () =>
+                    import('./pages/admin-lessons.routes')
+                        .then(m => m.adminLessonsRoutes)
+            }
+        ]
     }
 ];

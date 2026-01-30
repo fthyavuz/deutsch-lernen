@@ -1,0 +1,25 @@
+<h3>{{ isEditMode ? 'Edit Lesson' : 'Create Lesson' }}</h3>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+    <label>
+        Title
+        <input type="text" formControlName="title" />
+    </label>
+
+    <label>
+        Description
+        <textarea formControlName="description"></textarea>
+    </label>
+
+    <label>
+        Lesson Order
+        <input type="number" formControlName="lessonOrder" />
+    </label>
+
+    <button type="submit" [disabled]="form.invalid">
+        {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+
+    <button type="button" (click)="cancel()">Cancel</button>
+</form>

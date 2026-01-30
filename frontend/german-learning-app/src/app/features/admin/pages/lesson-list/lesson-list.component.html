@@ -1,0 +1,23 @@
+<h3>Lessons</h3>
+
+<button (click)="create()">+ New Lesson</button>
+
+<table *ngIf="lessons().length">
+    <tr>
+        <th>Order</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr *ngFor="let lesson of lessons()">
+        <td>{{ lesson.lessonOrder }}</td>
+        <td>{{ lesson.title }}</td>
+        <td>{{ lesson.description }}</td>
+        <td>
+            <button (click)="open(lesson.id!)">Open</button>
+            <button (click)="edit(lesson.id!)">Edit</button>
+            <button (click)="remove(lesson.id!)">Delete</button>
+        </td>
+    </tr>
+</table>
