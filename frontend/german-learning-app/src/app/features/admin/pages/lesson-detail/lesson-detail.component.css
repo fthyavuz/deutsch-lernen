@@ -1,0 +1,27 @@
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+}
+
+.tabs button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    border-bottom: 2px solid transparent;
+}
+
+.tabs button.active {
+    border-color: #3f51b5;
+    color: #3f51b5;
+    font-weight: bold;
+}
+
+.actions {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}

@@ -1,0 +1,31 @@
+<h3>Add Vocabulary</h3>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <label>
+        German Word
+        <input formControlName="germanWord" />
+    </label>
+
+    <label>
+        English Meaning
+        <input formControlName="englishMeaning" />
+    </label>
+
+    <label>
+        Turkish Meaning
+        <input formControlName="turkishMeaning" />
+    </label>
+
+    <label>
+        German Explanation
+        <textarea formControlName="germanExplanation"></textarea>
+    </label>
+
+    <label>
+        Related Words
+        <input formControlName="relatedWords" placeholder="Comma separated..." />
+    </label>
+
+    <button type="submit" [disabled]="form.invalid">Create</button>
+    <button type="button" (click)="cancel()">Cancel</button>
+</form>

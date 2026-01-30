@@ -9,12 +9,6 @@ export const adminRoutes: Routes = [
         canActivate: [adminGuard],
         children: [
             {
-                path: 'vocabulary',
-                loadChildren: () =>
-                    import('./pages/admin-vocabulary.routes')
-                        .then(m => m.adminVocabularyRoutes)
-            },
-            {
                 path: 'lessons',
                 loadChildren: () =>
                     import('./pages/admin-lessons.routes')

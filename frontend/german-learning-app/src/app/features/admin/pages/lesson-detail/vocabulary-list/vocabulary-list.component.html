@@ -1,0 +1,30 @@
+<div class="vocabulary-list">
+    @if (vocabularies().length === 0) {
+    <p class="empty-state">No vocabulary added yet.</p>
+    } @else {
+    <table>
+        <thead>
+            <tr>
+                <th>German</th>
+                <th>English</th>
+                <th>Turkish</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (vocab of vocabularies(); track vocab.id) {
+            <tr>
+                <td>
+                    <span class="german-word">{{ vocab.germanWord }}</span>
+                </td>
+                <td>{{ vocab.englishMeaning }}</td>
+                <td>{{ vocab.turkishMeaning }}</td>
+                <td class="actions">
+                    <button class="btn-delete" (click)="delete(vocab.id)">Delete</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    }
+</div>

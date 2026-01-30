@@ -6,7 +6,7 @@ export interface VocabularyDTO {
     germanWord: string;
     englishMeaning: string;
     turkishMeaning: string;
-    germanExplanation?: string;
-    relatedWords?: string; // comma-separated
-    exampleSentences?: ExampleSentenceDTO[];
+    germanExplanation: string;
+    relatedWords: string; // comma-separated
+    exampleSentences: ExampleSentenceDTO[];
 }

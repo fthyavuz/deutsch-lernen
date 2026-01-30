@@ -1,0 +1,21 @@
+<h3>{{ lessonTitle() }}</h3>
+
+<div class="tabs">
+    <button (click)="activeTab.set('vocab')" [class.active]="activeTab() === 'vocab'">
+        Vocabulary
+    </button>
+    <button (click)="activeTab.set('quiz')" [class.active]="activeTab() === 'quiz'">
+        Quizzes
+    </button>
+</div>
+
+<div class="content">
+    @if (activeTab() === 'vocab') {
+    <div class="actions">
+        <button (click)="addVocabulary()">+ Add Word</button>
+    </div>
+    <app-vocabulary-list [lessonId]="lessonId()"></app-vocabulary-list>
+    } @else {
+    <p>Quizzes coming soon...</p>
+    }
+</div>
