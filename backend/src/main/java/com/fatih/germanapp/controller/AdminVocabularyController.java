@@ -20,17 +20,25 @@ import com.fatih.germanapp.model.Lesson;
 import com.fatih.germanapp.model.Vocabulary;
 import com.fatih.germanapp.repository.LessonRepository;
 
+import com.fatih.germanapp.repository.ExampleSentenceRepository;
+import com.fatih.germanapp.model.ExampleSentence;
+import com.fatih.germanapp.dto.*;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/admin/vocabularies")
 public class AdminVocabularyController {
 
     private final VocabularyRepository vocabularyRepository;
     private final LessonRepository lessonRepository;
+    private final ExampleSentenceRepository exampleSentenceRepository;
 
     public AdminVocabularyController(VocabularyRepository vocabularyRepository,
-            LessonRepository lessonRepository) {
+            LessonRepository lessonRepository,
+            ExampleSentenceRepository exampleSentenceRepository) {
         this.vocabularyRepository = vocabularyRepository;
         this.lessonRepository = lessonRepository;
+        this.exampleSentenceRepository = exampleSentenceRepository;
     }
 
     // CREATE
@@ -50,6 +58,18 @@ public class AdminVocabularyController {
         vocabulary.setLesson(lesson);
 
         Vocabulary saved = vocabularyRepository.save(vocabulary);
+
+        if (request.getExampleSentences() != null) {
+            for (AdminExampleSentenceRequestDTO sent : request.getExampleSentences()) {
+                ExampleSentence es = new ExampleSentence();
+                es.setGermanSentence(sent.getGermanSentence());
+                es.setEnglishTranslation(sent.getEnglishTranslation());
+                es.setTurkishTranslation(sent.getTurkishTranslation());
+                es.setVocabulary(saved);
+                exampleSentenceRepository.save(es);
+            }
+        }
+
         return toResponse(saved);
     }
 
@@ -69,6 +89,23 @@ public class AdminVocabularyController {
         vocabulary.setRelatedWords(request.getRelatedWords());
 
         Vocabulary updated = vocabularyRepository.save(vocabulary);
+
+        if (request.getExampleSentences() != null) {
+            // Remove existing
+            List<ExampleSentence> existing = exampleSentenceRepository.findByVocabularyId(id);
+            exampleSentenceRepository.deleteAll(existing);
+
+            // Add new
+            for (AdminExampleSentenceRequestDTO sent : request.getExampleSentences()) {
+                ExampleSentence es = new ExampleSentence();
+                es.setGermanSentence(sent.getGermanSentence());
+                es.setEnglishTranslation(sent.getEnglishTranslation());
+                es.setTurkishTranslation(sent.getTurkishTranslation());
+                es.setVocabulary(updated);
+                exampleSentenceRepository.save(es);
+            }
+        }
+
         return toResponse(updated);
     }
 
@@ -97,6 +134,21 @@ public class AdminVocabularyController {
         response.setTurkishMeaning(vocabulary.getTurkishMeaning());
         response.setGermanExplanation(vocabulary.getGermanExplanation());
         response.setRelatedWords(vocabulary.getRelatedWords());
+
+        if (exampleSentenceRepository != null) {
+            response.setExampleSentences(
+                    exampleSentenceRepository.findByVocabularyId(vocabulary.getId())
+                            .stream()
+                            .map(es -> {
+                                AdminExampleSentenceResponseDTO dto = new AdminExampleSentenceResponseDTO();
+                                dto.setId(es.getId());
+                                dto.setGermanSentence(es.getGermanSentence());
+                                dto.setEnglishTranslation(es.getEnglishTranslation());
+                                dto.setTurkishTranslation(es.getTurkishTranslation());
+                                return dto;
+                            })
+                            .collect(Collectors.toList()));
+        }
         return response;
     }
 }

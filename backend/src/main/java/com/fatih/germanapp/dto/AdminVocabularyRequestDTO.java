@@ -16,4 +16,5 @@ public class AdminVocabularyRequestDTO {
     private String germanExplanation;
     private String relatedWords;
 
+    private java.util.List<AdminExampleSentenceRequestDTO> exampleSentences;
 }

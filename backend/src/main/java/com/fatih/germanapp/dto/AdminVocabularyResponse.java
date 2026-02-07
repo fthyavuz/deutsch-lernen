@@ -15,4 +15,6 @@ public class AdminVocabularyResponse {
 
     private String germanExplanation;
     private String relatedWords;
+
+    private java.util.List<AdminExampleSentenceResponseDTO> exampleSentences;
 }

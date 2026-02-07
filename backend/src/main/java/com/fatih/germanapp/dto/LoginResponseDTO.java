@@ -10,4 +10,5 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class LoginResponseDTO {
     private String token;
+    private Role role;
 }

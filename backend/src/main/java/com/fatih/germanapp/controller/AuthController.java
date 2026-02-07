@@ -40,7 +40,6 @@ public class AuthController {
 
         @PostMapping("/login")
         public LoginResponseDTO login(@RequestBody LoginRequestDTO request) {
-                System.out.println("Login request: " + request);
 
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(
@@ -53,8 +52,8 @@ public class AuthController {
                 String token = jwtUtil.generateToken(
                                 user.getEmail(),
                                 user.getRole().name());
-
-                return new LoginResponseDTO(token);
+                Role role = user.getRole();
+                return new LoginResponseDTO(token,role);
         }
 
         @PostMapping("/register")
