@@ -1,0 +1,58 @@
+<div class="flashcard-container" (click)="flip()" [class.flipped]="isFlipped">
+    <div class="card-inner">
+        <!-- Front Side -->
+        <div class="card-front">
+            <div class="content">
+                <h2 class="german-word">{{ vocabulary().germanWord }}</h2>
+
+                @if(vocabulary().relatedWords) {
+                <div class="related-words">
+                    <span class="label">Related:</span> {{ vocabulary().relatedWords }}
+                </div>
+                }
+
+                @if(currentSentence) {
+                <div class="sentence-container">
+                    <p class="german-sentence">{{ currentSentence.germanSentence }}</p>
+                </div>
+                }
+            </div>
+            <div class="hint">Click to flip</div>
+        </div>
+
+        <!-- Back Side -->
+        <div class="card-back">
+            <div class="content">
+                <h3 class="explanation-title">Explanation</h3>
+                <p class="german-explanation">{{ vocabulary().germanExplanation }}</p>
+
+                <div class="translations">
+                    <button (click)="showEnglish($event)" [class.active]="showingEnglish">
+                        English
+                    </button>
+                    <button (click)="showTurkish($event)" [class.active]="showingTurkish">
+                        Türkçe
+                    </button>
+                </div>
+
+                @if(showingEnglish) {
+                <div class="translation-result">
+                    <p class="meaning"><strong>Meaning:</strong> {{ vocabulary().englishMeaning }}</p>
+                    @if(currentSentence) {
+                    <p class="sentence-trans"><strong>Ex:</strong> {{ currentSentence.englishTranslation }}</p>
+                    }
+                </div>
+                }
+
+                @if(showingTurkish) {
+                <div class="translation-result">
+                    <p class="meaning"><strong>Anlam:</strong> {{ vocabulary().turkishMeaning }}</p>
+                    @if(currentSentence) {
+                    <p class="sentence-trans"><strong>Örnek:</strong> {{ currentSentence.turkishTranslation }}</p>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

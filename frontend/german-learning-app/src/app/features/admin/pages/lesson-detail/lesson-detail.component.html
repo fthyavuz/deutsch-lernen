@@ -16,6 +16,11 @@
     </div>
     <app-vocabulary-list [lessonId]="lessonId()"></app-vocabulary-list>
     } @else {
-    <p>Quizzes coming soon...</p>
+    <div class="actions">
+        <!-- New Add Button -->
+        <button (click)="addQuiz()">+ Add Quiz</button>
+    </div>
+    <!-- New List Component -->
+    <app-quiz-list [lessonId]="lessonId()"></app-quiz-list>
     }
 </div>

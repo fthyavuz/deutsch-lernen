@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdminLessonService } from '../../../../shared/services/admin-lesson.service';
 import { VocabularyListComponent } from './vocabulary-list/vocabulary-list.component';
+import { QuizListComponent } from './quiz-list/quiz-list.component';
 
 @Component({
     selector: 'app-lesson-detail',
-    imports: [CommonModule, VocabularyListComponent],
+    imports: [CommonModule, VocabularyListComponent, QuizListComponent],
     templateUrl: './lesson-detail.component.html',
     styleUrl: './lesson-detail.component.css',
 })
@@ -38,5 +39,8 @@ export class LessonDetailComponent {
 
     addVocabulary() {
         this.router.navigate(['vocab/new'], { relativeTo: this.route });
+    }
+    addQuiz() {
+        this.router.navigate(['quiz/new'], { relativeTo: this.route });
     }
 }

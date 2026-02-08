@@ -1,0 +1,22 @@
+<div class="quiz-list">
+    @for (quiz of quizzes(); track quiz.id) {
+    <div class="quiz-card">
+        <div class="quiz-header">
+            <span class="badge">{{ quiz.type }}</span>
+            <div class="actions">
+                <button (click)="editQuiz(quiz.id)">Edit</button>
+                <button class="delete" (click)="deleteQuiz(quiz.id)">Delete</button>
+            </div>
+        </div>
+        <p class="question">{{ quiz.question }}</p>
+        <div class="options" *ngIf="quiz.type === 'MULTIPLE_CHOICE'">
+            <span [class.correct]="quiz.correctAnswer === 'A'">A: {{ quiz.optionA }}</span>
+            <span [class.correct]="quiz.correctAnswer === 'B'">B: {{ quiz.optionB }}</span>
+            <span [class.correct]="quiz.correctAnswer === 'C'">C: {{ quiz.optionC }}</span>
+            <span [class.correct]="quiz.correctAnswer === 'D'">D: {{ quiz.optionD }}</span>
+        </div>
+    </div>
+    } @empty {
+    <p class="empty-state">No quizzes added yet.</p>
+    }
+</div>

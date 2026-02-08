@@ -13,8 +13,15 @@ export const routes: Routes = [
         path: '',
         canActivate: [authGuard],
         loadComponent: () =>
-            import('./features/lessons/lesson-list/lesson-list.component')
-                .then(m => m.LessonListComponent)
+            import('./features/lessons/lesson-list/student-lesson-list.component')
+                .then(m => m.StudentLessonListComponent)
+    },
+    {
+        path: 'lessons/:id',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/lessons/lesson-detail/student-lesson-detail.component')
+                .then(m => m.StudentLessonDetailComponent)
     },
     {
         path: 'admin',

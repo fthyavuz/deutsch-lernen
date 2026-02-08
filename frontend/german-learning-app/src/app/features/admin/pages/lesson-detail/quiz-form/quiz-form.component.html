@@ -1,0 +1,62 @@
+<div class="quiz-form-container">
+    <h2>{{ quizId() ? 'Edit' : 'Create' }} Quiz</h2>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="type">Question Type</label>
+            <select id="type" formControlName="type">
+                @for (type of quizTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="question">Question</label>
+            <textarea id="question" formControlName="question" rows="3"></textarea>
+        </div>
+
+        @if (form.get('type')?.value === 'MULTIPLE_CHOICE') {
+        <div class="options-grid">
+            <div class="form-group">
+                <label for="optionA">Option A</label>
+                <input type="text" id="optionA" formControlName="optionA">
+            </div>
+            <div class="form-group">
+                <label for="optionB">Option B</label>
+                <input type="text" id="optionB" formControlName="optionB">
+            </div>
+            <div class="form-group">
+                <label for="optionC">Option C</label>
+                <input type="text" id="optionC" formControlName="optionC">
+            </div>
+            <div class="form-group">
+                <label for="optionD">Option D</label>
+                <input type="text" id="optionD" formControlName="optionD">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="correctAnswer">Correct Answer (A, B, C, or D)</label>
+            <select id="correctAnswer" formControlName="correctAnswer">
+                <option value="">Select Answer</option>
+                <option value="A">Option A</option>
+                <option value="B">Option B</option>
+                <option value="C">Option C</option>
+                <option value="D">Option D</option>
+            </select>
+        </div>
+        } @else {
+        <!-- Fallback for other types if implemented -->
+        <div class="form-group">
+            <label for="correctAnswer">Correct Answer</label>
+            <input type="text" id="correctAnswer" formControlName="correctAnswer">
+        </div>
+        }
+
+        <div class="actions">
+            <button type="button" class="cancel" (click)="goBack()">Cancel</button>
+            <button type="submit" [disabled]="form.invalid">Save</button>
+        </div>
+    </form>
+</div>

@@ -26,6 +26,22 @@
         <input formControlName="relatedWords" placeholder="Comma separated..." />
     </label>
 
+    <h4>Example Sentence</h4>
+    <label>
+        German Sentence
+        <textarea formControlName="germanSentence"></textarea>
+    </label>
+
+    <label>
+        English Sentence Translation
+        <textarea formControlName="englishSentenceTranslation"></textarea>
+    </label>
+
+    <label>
+        Turkish Sentence Translation
+        <textarea formControlName="turkishSentenceTranslation"></textarea>
+    </label>
+
     <button type="submit" [disabled]="form.invalid">Create</button>
     <button type="button" (click)="cancel()">Cancel</button>
 </form>

@@ -1,0 +1,138 @@
+.flashcard-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 500px;
+    height: 400px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Vertically center content */
+    padding: 2rem;
+    box-sizing: border-box;
+    border: 1px solid #e5e7eb;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    justify-content: flex-start;
+    /* Align back content to top */
+    padding-top: 2rem;
+}
+
+.german-word {
+    font-size: 2.5rem;
+    color: #111827;
+    margin-bottom: 1.5rem;
+}
+
+.related-words {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    font-style: italic;
+}
+
+.german-sentence {
+    font-size: 1.2rem;
+    color: #374151;
+    background: #f3f4f6;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.hint {
+    margin-top: auto;
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+.explanation-title {
+    color: #4b5563;
+    margin-bottom: 1rem;
+}
+
+.german-explanation {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.translations {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.translations button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.translations button.active {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+}
+
+.translation-result {
+    text-align: left;
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.meaning {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.sentence-trans {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,14 +1,7 @@
-// src/app/shared/services/progress.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserProgressDTO } from '../models/user-progress.model';
-
-interface SaveProgressRequest {
-  userId: number;
-  lessonId: number;
-  score: number;
-}
+import { ProgressRequestDTO, UserProgressResponseDTO } from '../models/user-progress.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +10,11 @@ export class ProgressService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8080/api/progress';
 
-  getUserProgress(userId: number): Observable<UserProgressDTO[]> {
-    return this.http.get<UserProgressDTO[]>(`${this.apiUrl}/user/${userId}`);
+  getMyProgress(): Observable<UserProgressResponseDTO[]> {
+    return this.http.get<UserProgressResponseDTO[]>(`${this.apiUrl}/me`);
   }
 
-  saveProgress(request: SaveProgressRequest): Observable<UserProgressDTO> {
-    return this.http.post<UserProgressDTO>(this.apiUrl, request);
+  saveProgress(request: ProgressRequestDTO): Observable<UserProgressResponseDTO> {
+    return this.http.post<UserProgressResponseDTO>(this.apiUrl, request);
   }
 }

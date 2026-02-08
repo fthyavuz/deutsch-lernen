@@ -1,0 +1,33 @@
+<div class="lesson-container">
+    <div class="header">
+        <button class="back-btn" (click)="goBack()">← Back</button>
+        <div class="progress">
+            {{ currentIndex() + 1 }} / {{ vocabularies().length }}
+        </div>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Loading words...</div>
+    } @else if (vocabularies().length === 0) {
+    <div class="empty">No words in this lesson yet.</div>
+    } @else if (finished()) {
+    <div class="finished-state">
+        <h2>Lesson Review Complete!</h2>
+        <p>You have reviewed all {{ vocabularies().length }} words.</p>
+        <div class="actions">
+            <button (click)="restart()">Review Again</button>
+            <button (click)="startQuiz()" class="primary">Take Quiz</button>
+        </div>
+    </div>
+    } @else {
+    <div class="flashcard-wrapper">
+        <app-flashcard [vocabulary]="currentVocabulary()!" (click)="next()"
+            title="Click to flip, then click Next below or swipe"></app-flashcard>
+
+        <div class="controls">
+            <button (click)="prev()" [disabled]="currentIndex() === 0">Previous</button>
+            <button (click)="next()" class="primary">Next Word</button>
+        </div>
+    </div>
+    }
+</div>

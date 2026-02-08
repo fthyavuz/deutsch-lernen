@@ -1,0 +1,43 @@
+<div class="container">
+    <header class="page-header">
+        <h1>My Learning Path</h1>
+        <p>Track your progress and continue learning German.</p>
+    </header>
+
+    @if (loading()) {
+    <div class="loading">Loading lessons...</div>
+    } @else {
+    <div class="lesson-grid">
+        @for (lesson of lessons(); track lesson.id) {
+        <div class="lesson-card" [class.completed]="lesson.progress?.completed">
+            <div class="card-content">
+                <h2>{{ lesson.title }}</h2>
+                <p>{{ lesson.description }}</p>
+
+                @if (lesson.progress) {
+                <div class="progress-info">
+                    <span class="badge" [class.success]="lesson.progress?.completed">
+                        {{ lesson.progress?.completed ? 'Completed' : 'In Progress' }}
+                    </span>
+                    @if (lesson.progress?.score !== undefined) {
+                    <span class="score">Score: {{ lesson.progress?.score }}%</span>
+                    }
+                </div>
+                } @else {
+                <div class="progress-info">
+                    <span class="badge new">Not Started</span>
+                </div>
+                }
+            </div>
+            <div class="card-actions">
+                <button (click)="startLesson(lesson.id)">
+                    {{ lesson.progress ? 'Review' : 'Start Lesson' }}
+                </button>
+            </div>
+        </div>
+        } @empty {
+        <p>No lessons available yet.</p>
+        }
+    </div>
+    }
+</div>

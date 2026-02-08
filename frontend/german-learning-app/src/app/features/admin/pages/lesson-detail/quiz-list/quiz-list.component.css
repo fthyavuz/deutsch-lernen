@@ -1,0 +1,51 @@
+    .quiz-card {
+        border: 1px solid #ddd;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+
+    .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .badge {
+        background: #e0e7ff;
+        color: #3730a3;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    .question {
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .correct {
+        color: green;
+        font-weight: bold;
+    }
+
+    .actions button {
+        margin-left: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .delete {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border-color: #fee2e2;
+    }

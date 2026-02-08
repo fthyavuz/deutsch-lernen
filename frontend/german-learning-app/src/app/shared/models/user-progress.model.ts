@@ -1,12 +1,12 @@
-// src/app/shared/models/user-progress.model.ts
-import { LessonDTO } from './lesson.model';
-import { UserDTO } from './user.model';
-
-export interface UserProgressDTO {
-    id: number;
+export interface UserProgressResponseDTO {
+    lessonId: number;
+    lessonTitle: string;
     completed: boolean;
     score: number;
-    completedAt?: string; // ISO string
-    user: UserDTO;
-    lesson: LessonDTO;
+    completedAt?: string;
+}
+
+export interface ProgressRequestDTO {
+    lessonId: number;
+    score: number;
 }

@@ -24,7 +24,10 @@ export class LessonVocabularyFormComponent {
         englishMeaning: ['', Validators.required],
         turkishMeaning: ['', Validators.required],
         germanExplanation: ['', Validators.required],
-        relatedWords: ['', Validators.required]
+        relatedWords: ['', Validators.required],
+        germanSentence: [''],
+        englishSentenceTranslation: [''],
+        turkishSentenceTranslation: ['']
     });
 
     ngOnInit() {
@@ -34,9 +37,19 @@ export class LessonVocabularyFormComponent {
     submit() {
         if (this.form.invalid) return;
 
+        const formValue = this.form.getRawValue();
         const request: AdminVocabularyRequest = {
-            ...this.form.getRawValue(),
-            lessonId: this.lessonId
+            lessonId: this.lessonId,
+            germanWord: formValue.germanWord,
+            englishMeaning: formValue.englishMeaning,
+            turkishMeaning: formValue.turkishMeaning,
+            germanExplanation: formValue.germanExplanation,
+            relatedWords: formValue.relatedWords,
+            exampleSentences: [{
+                germanSentence: formValue.germanSentence,
+                englishTranslation: formValue.englishSentenceTranslation,
+                turkishTranslation: formValue.turkishSentenceTranslation
+            }]
         };
 
         this.service.create(request).subscribe(() => {
