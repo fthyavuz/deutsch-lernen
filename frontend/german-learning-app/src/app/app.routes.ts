@@ -10,6 +10,12 @@ export const routes: Routes = [
                 .then(m => m.LoginComponent)
     },
     {
+        path: 'register',
+        loadComponent: () =>
+            import('./features/auth/register/register.component')
+                .then(m => m.RegisterComponent)
+    },
+    {
         path: '',
         canActivate: [authGuard],
         loadComponent: () =>
@@ -22,6 +28,13 @@ export const routes: Routes = [
         loadComponent: () =>
             import('./features/lessons/lesson-detail/student-lesson-detail.component')
                 .then(m => m.StudentLessonDetailComponent)
+    },
+    {
+        path: 'lessons/:lessonId/quiz',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/quiz/student-quiz.component')
+                .then(m => m.StudentQuizComponent)
     },
     {
         path: 'admin',

@@ -43,4 +43,8 @@ export class LessonDetailComponent {
     addQuiz() {
         this.router.navigate(['quiz/new'], { relativeTo: this.route });
     }
+
+    goBack() {
+        this.router.navigate(['/admin/lessons']);
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VocabularyDTO } from '../../../../shared/models/vocabulary.model';
 
@@ -11,6 +11,16 @@ import { VocabularyDTO } from '../../../../shared/models/vocabulary.model';
 })
 export class FlashcardComponent {
     vocabulary = input.required<VocabularyDTO>();
+
+    constructor() {
+        // Reset card state when vocabulary changes
+        effect(() => {
+            this.vocabulary();
+            this.isFlipped = false;
+            this.showingEnglish = false;
+            this.showingTurkish = false;
+        });
+    }
 
     isFlipped = false;
     showingEnglish = false;

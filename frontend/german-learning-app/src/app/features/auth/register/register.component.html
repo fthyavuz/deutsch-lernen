@@ -1,11 +1,28 @@
-<h2>Register</h2>
+<div class="auth-container">
+    <h2>Create Account</h2>
+    <p class="subtitle">Join our community to start learning German today!</p>
 
-<form (ngSubmit)="register()">
-    <input type="email" placeholder="Email" [(ngModel)]="email" name="email" required />
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
+        <div class="form-group">
+            <input type="email" placeholder="Email Address" formControlName="email" />
+            <div class="error-msg" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+                Please enter a valid email address.
+            </div>
+        </div>
 
-    <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required />
+        <div class="form-group">
+            <input type="password" placeholder="Password" formControlName="password" />
+            <small class="hint">At least 8 characters, with Uppercase, Lowercase, and Number.</small>
+        </div>
 
-    <button type="submit">Register</button>
-</form>
+        <button type="submit" [disabled]="registerForm.invalid">Register</button>
+    </form>
 
-<p *ngIf="error()">{{ error() }}</p>
+    <div class="error-banner" *ngIf="error()">
+        {{ error() }}
+    </div>
+
+    <p class="auth-footer">
+        Already have an account? <a routerLink="/login">Log in here</a>
+    </p>
+</div>

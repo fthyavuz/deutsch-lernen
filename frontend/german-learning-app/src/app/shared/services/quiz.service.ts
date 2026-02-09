@@ -1,19 +1,7 @@
-// src/app/shared/services/quiz.service.ts
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { QuizQuestionDTO } from '../models/quiz.model';
-
-interface QuizSubmitRequest {
-  questionId: number;
-  selectedAnswer: string;
-}
-
-interface QuizSubmitResponse {
-  questionId: number;
-  correct: boolean;
-  correctAnswer: string;
-}
+import { QuizQuestionDTO, QuizSubmitRequest, QuizSubmitResponse } from '../models/quiz.model';
 
 @Injectable({
   providedIn: 'root',

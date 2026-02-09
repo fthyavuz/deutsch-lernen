@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { AdminVocabularyService } from '../../../../../shared/services/admin-vocabulary.service';
 import { VocabularyDTO } from '../../../../../shared/models/vocabulary.model';
 
@@ -13,6 +14,7 @@ export class VocabularyListComponent implements OnChanges {
     @Input() lessonId!: number;
 
     private service = inject(AdminVocabularyService);
+    private router = inject(Router);
 
     vocabularies = signal<VocabularyDTO[]>([]);
 
@@ -26,6 +28,10 @@ export class VocabularyListComponent implements OnChanges {
         this.service.getByLesson(this.lessonId).subscribe(data => {
             this.vocabularies.set(data);
         });
+    }
+
+    edit(id: number) {
+        this.router.navigate(['/admin/lessons', this.lessonId, 'vocabulary', id]);
     }
 
     delete(id: number) {

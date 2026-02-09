@@ -26,6 +26,10 @@ export const adminLessonsRoutes: Routes = [
         loadComponent: () => import('./lesson-detail/lesson-vocabulary-form/lesson-vocabulary-form.component').then(m => m.LessonVocabularyFormComponent)
     },
     {
+        path: ':id/vocabulary/:vocabularyId',
+        loadComponent: () => import('./lesson-detail/lesson-vocabulary-form/lesson-vocabulary-form.component').then(m => m.LessonVocabularyFormComponent)
+    },
+    {
         path: ':id/quiz/new',
         loadComponent: () => import('./lesson-detail/quiz-form/quiz-form.component').then(m => m.QuizFormComponent)
     },

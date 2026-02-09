@@ -1,4 +1,8 @@
 <div class="quiz-form-container">
+    <div class="page-header">
+        <button type="button" class="btn-back" (click)="goBack()">← Back to Lesson Details</button>
+    </div>
+
     <h2>{{ quizId() ? 'Edit' : 'Create' }} Quiz</h2>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -45,6 +49,42 @@
                 <option value="C">Option C</option>
                 <option value="D">Option D</option>
             </select>
+        </div>
+        } @else if (form.get('type')?.value === 'MATCHING') {
+        <!-- Matching Pairs -->
+        <div class="matching-section">
+            <div class="section-header">
+                <label>Matching Pairs</label>
+                <button type="button" class="add-pair-btn" (click)="addPair()">+ Add Pair</button>
+            </div>
+
+            @if (matchingPairs().length === 0) {
+            <p class="empty-message">No pairs added yet. Click "Add Pair" to start.</p>
+            }
+
+            @for (pair of matchingPairs(); track $index) {
+            <div class="pair-row">
+                <div class="pair-input">
+                    <label>German</label>
+                    <input type="text" [value]="pair.german"
+                        (input)="updatePair($index, 'german', $any($event.target).value)" placeholder="e.g., Hund">
+                </div>
+                <div class="pair-separator">:</div>
+                <div class="pair-input">
+                    <label>Translation</label>
+                    <input type="text" [value]="pair.translation"
+                        (input)="updatePair($index, 'translation', $any($event.target).value)" placeholder="e.g., Dog">
+                </div>
+                <button type="button" class="remove-pair-btn" (click)="removePair($index)">✕</button>
+            </div>
+            }
+        </div>
+        } @else if (form.get('type')?.value === 'FILL_IN_THE_BLANK') {
+        <!-- Fill in the Blank -->
+        <div class="form-group">
+            <label for="correctAnswer">Correct Answer</label>
+            <input type="text" id="correctAnswer" formControlName="correctAnswer"
+                placeholder="Enter the correct answer">
         </div>
         } @else {
         <!-- Fallback for other types if implemented -->

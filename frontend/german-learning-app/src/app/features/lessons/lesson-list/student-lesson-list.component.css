@@ -1,82 +1,88 @@
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 3rem 1.5rem;
 }
 
 .page-header {
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
     text-align: center;
 }
 
 .page-header h1 {
-    font-size: 2.5rem;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
+    font-size: 2.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.025em;
 }
 
 .page-header p {
-    color: #6b7280;
-    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .lesson-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 2rem;
 }
 
 .lesson-card {
-    background: white;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
     display: flex;
     flex-direction: column;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border);
+    position: relative;
 }
 
 .lesson-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
 }
 
 .lesson-card.completed {
-    border-left: 5px solid #10b981;
+    border-top: 4px solid var(--success);
 }
 
 .card-content {
-    padding: 1.5rem;
+    padding: 2rem;
     flex: 1;
 }
 
 .card-content h2 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
 }
 
 .card-content p {
-    color: #4b5563;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
 }
 
 .progress-info {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: space-between;
     margin-top: auto;
 }
 
 .badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -87,41 +93,45 @@
 }
 
 .badge.new {
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: var(--primary-light);
+    color: var(--primary);
 }
 
 .score {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #059669;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--success);
+    background: #ecfdf5;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
 }
 
 .card-actions {
-    padding: 1rem 1.5rem;
-    background-color: #f9fafb;
-    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    background-color: #f8fafc;
+    border-top: 1px solid var(--border);
 }
 
 button {
     width: 100%;
-    padding: 0.75rem 1rem;
-    background-color: #4f46e5;
+    padding: 0.9rem;
+    background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 6px;
-    font-weight: 500;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
 }
 
 button:hover {
-    background-color: #4338ca;
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-md);
 }
 
 .loading {
     text-align: center;
-    font-size: 1.25rem;
-    color: #6b7280;
-    padding: 4rem;
+    padding: 5rem;
 }

@@ -12,6 +12,7 @@ export interface AdminQuizQuestionRequestDTO {
     optionB: string;
     optionC: string;
     optionD: string;
+    matchingPairs?: string;
     correctAnswer: string;
 }
 
@@ -23,5 +24,6 @@ export interface AdminQuizQuestionResponseDTO {
     optionB: string;
     optionC: string;
     optionD: string;
+    matchingPairs?: string;
     correctAnswer: string;
 }

@@ -22,14 +22,17 @@ export class QuizFormComponent {
   quizId = signal<number | null>(null);
   quizTypes = Object.values(QuizQuestionType);
 
+  // For matching type
+  matchingPairs = signal<{ german: string, translation: string }[]>([]);
+
   form = this.fb.group({
     type: [QuizQuestionType.MULTIPLE_CHOICE, Validators.required],
     question: ['', Validators.required],
-    optionA: ['', Validators.required],
-    optionB: ['', Validators.required],
-    optionC: ['', Validators.required],
-    optionD: ['', Validators.required],
-    correctAnswer: ['', Validators.required],
+    optionA: [''],
+    optionB: [''],
+    optionC: [''],
+    optionD: [''],
+    correctAnswer: [''],
   });
 
   ngOnInit() {
@@ -55,18 +58,28 @@ export class QuizFormComponent {
 
   private updateValidators(type: QuizQuestionType) {
     const options = ['optionA', 'optionB', 'optionC', 'optionD'];
+    const correctAnswer = this.form.get('correctAnswer');
 
     if (type === QuizQuestionType.MULTIPLE_CHOICE) {
       options.forEach(opt => {
         this.form.get(opt)?.setValidators(Validators.required);
         this.form.get(opt)?.updateValueAndValidity();
       });
-    } else {
+      correctAnswer?.setValidators(Validators.required);
+    } else if (type === QuizQuestionType.FILL_IN_THE_BLANK) {
       options.forEach(opt => {
         this.form.get(opt)?.clearValidators();
         this.form.get(opt)?.updateValueAndValidity();
       });
+      correctAnswer?.setValidators(Validators.required);
+    } else if (type === QuizQuestionType.MATCHING) {
+      options.forEach(opt => {
+        this.form.get(opt)?.clearValidators();
+        this.form.get(opt)?.updateValueAndValidity();
+      });
+      correctAnswer?.clearValidators();
     }
+    correctAnswer?.updateValueAndValidity();
   }
 
 
@@ -92,6 +105,15 @@ export class QuizFormComponent {
             optionD: quiz.optionD,
             correctAnswer: quiz.correctAnswer
           });
+
+          // Load matching pairs if type is MATCHING
+          if (quiz.type === QuizQuestionType.MATCHING && quiz.matchingPairs) {
+            const pairs = quiz.matchingPairs.split('|').map((pair: string) => {
+              const [german, translation] = pair.split(':');
+              return { german, translation };
+            });
+            this.matchingPairs.set(pairs);
+          }
         }
       });
     }
@@ -100,7 +122,24 @@ export class QuizFormComponent {
   onSubmit() {
     if (this.form.invalid) return;
 
+    // Validate matching pairs if type is MATCHING
+    const type = this.form.get('type')?.value;
+    if (type === QuizQuestionType.MATCHING && this.matchingPairs().length === 0) {
+      alert('Please add at least one matching pair');
+      return;
+    }
+
     const formValue = this.form.value;
+
+    // Format matching pairs as "Hund:Dog|Katze:Cat"
+    let matchingPairsStr = '';
+    if (type === QuizQuestionType.MATCHING) {
+      matchingPairsStr = this.matchingPairs()
+        .filter(p => p.german && p.translation)
+        .map(p => `${p.german}:${p.translation}`)
+        .join('|');
+    }
+
     const request = {
       lessonId: this.lessonId(),
       type: formValue.type!,
@@ -109,7 +148,9 @@ export class QuizFormComponent {
       optionB: formValue.optionB || '',
       optionC: formValue.optionC || '',
       optionD: formValue.optionD || '',
-      correctAnswer: formValue.correctAnswer!,
+      matchingPairs: matchingPairsStr,
+      // For MATCHING type, correctAnswer should be same as matchingPairs for validation
+      correctAnswer: type === QuizQuestionType.MATCHING ? matchingPairsStr : (formValue.correctAnswer || ''),
     };
 
     if (this.quizId()) {
@@ -121,6 +162,23 @@ export class QuizFormComponent {
         this.goBack();
       });
     }
+  }
+
+  // Matching pair management
+  addPair() {
+    this.matchingPairs.update(pairs => [...pairs, { german: '', translation: '' }]);
+  }
+
+  removePair(index: number) {
+    this.matchingPairs.update(pairs => pairs.filter((_, i) => i !== index));
+  }
+
+  updatePair(index: number, field: 'german' | 'translation', value: string) {
+    this.matchingPairs.update(pairs => {
+      const newPairs = [...pairs];
+      newPairs[index][field] = value;
+      return newPairs;
+    });
   }
 
   goBack() {

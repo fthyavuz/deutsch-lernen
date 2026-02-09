@@ -47,3 +47,22 @@ th {
 .btn-delete:hover {
     background: #c82333;
 }
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-edit {
+    padding: 0.25rem 0.5rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.btn-edit:hover {
+    background: #0056b3;
+}

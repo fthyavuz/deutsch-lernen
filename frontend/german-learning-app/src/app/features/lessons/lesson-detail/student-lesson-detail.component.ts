@@ -71,8 +71,8 @@ export class StudentLessonDetailComponent implements OnInit {
   }
 
   startQuiz() {
-    // Placeholder for next step
-    alert('Quiz feature coming next!');
+    const lessonId = this.route.snapshot.paramMap.get('id');
+    this.router.navigate([`/lessons/${lessonId}/quiz`]);
   }
 
   goBack() {

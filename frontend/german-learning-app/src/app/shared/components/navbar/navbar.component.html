@@ -4,7 +4,7 @@
     <div class="links">
         <a *ngIf="isLoggedIn()" routerLink="/">Lessons</a>
 
-        <a *ngIf="isAdmin()" routerLink="/admin">Admin</a>
+        <a *ngIf="isAdmin()" routerLink="/admin/lessons">Admin</a>
 
         <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
         <a *ngIf="!isLoggedIn()" routerLink="/register">Register</a>

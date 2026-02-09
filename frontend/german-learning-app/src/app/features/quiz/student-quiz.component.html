@@ -1,0 +1,158 @@
+<div class="quiz-container">
+    <!-- Back Button -->
+    <div class="page-header">
+        <button class="btn-back" (click)="backToLessons()">
+            ← Back to Lessons
+        </button>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading your quiz...</p>
+    </div>
+    } @else if (quizCompleted()) {
+    <div class="results-card">
+        <div class="score-circle">
+            <span class="score-value">{{ Math.round((score() / questions().length) * 100) }}%</span>
+            <span class="score-label">Final Score</span>
+        </div>
+
+        <h3>Quiz Completed!</h3>
+        <p>You got {{ score() }} out of {{ questions().length }} questions correct.</p>
+
+        <div class="actions">
+            <button class="btn-secondary" (click)="retry()">Try Again</button>
+            <button class="btn-primary" (click)="backToLessons()">Back to Lessons</button>
+        </div>
+    </div>
+    } @else if (questions().length === 0) {
+    <div class="empty-state">
+        <p>No questions available for this lesson yet.</p>
+        <button class="btn-primary" (click)="backToLessons()">Back to Lessons</button>
+    </div>
+    } @else {
+    <div class="quiz-header">
+        <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+        </div>
+        <span class="question-counter">Question {{ currentIndex() + 1 }} of {{ questions().length }}</span>
+    </div>
+
+    <div class="question-card">
+        <h2 class="question-text">{{ currentQuestion.question }}</h2>
+        @if (currentQuestion.type === 'FILL_IN_THE_BLANK') {
+        <div class="fill-in-blank-container">
+            <input type="text" [ngModel]="userInput()" (ngModelChange)="onInputChange($event)"
+                placeholder="Type your answer..." [disabled]="isAnswerSubmitted()" class="fill-input"
+                [class.correct]="isAnswerSubmitted() && isCorrect()"
+                [class.wrong]="isAnswerSubmitted() && !isCorrect()" />
+        </div>
+        } @else if (currentQuestion.type === 'MATCHING') {
+        <div class="matching-container">
+            <div class="matching-instructions">
+                <p>Click a German word, then click its matching translation</p>
+            </div>
+
+            <div class="matching-grid">
+                <!-- German words column -->
+                <div class="german-column">
+                    <h4>German</h4>
+                    @for (item of matchingItems(); track item.german) {
+                    <div class="matching-item german-item" [class.selected]="selectedGerman() === item.german"
+                        [class.matched]="isMatched(item.german, 'german')" [class.disabled]="isAnswerSubmitted()"
+                        (click)="selectGermanWord(item.german)">
+                        <span class="word">{{ item.german }}</span>
+                        @if (userMatches().has(item.german)) {
+                        <button class="unmatch-btn" (click)="unmatch(item.german); $event.stopPropagation()"
+                            [disabled]="isAnswerSubmitted()">✕</button>
+                        }
+                        @if (userMatches().has(item.german)) {
+                        <span class="match-arrow">→ {{ userMatches().get(item.german) }}</span>
+                        }
+                    </div>
+                    }
+                </div>
+
+                <!-- Translations column -->
+                <div class="translation-column">
+                    <h4>Translation</h4>
+                    @for (translation of shuffledTranslations(); track translation) {
+                    <div class="matching-item translation-item" [class.selected]="selectedTranslation() === translation"
+                        [class.matched]="isMatched(translation, 'translation')" [class.disabled]="isAnswerSubmitted()"
+                        (click)="selectTranslation(translation)">
+                        <span class="word">{{ translation }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        } @else if(currentQuestion.type === 'MULTIPLE_CHOICE') {
+        <div class="options-grid">
+            <!-- Option A -->
+            <button class="option-btn" [class.selected]="selectedOption() === 'optionA'"
+                [class.correct]="isAnswerSubmitted() && isCorrect() && selectedOption() === 'optionA'"
+                [class.wrong]="isAnswerSubmitted() && !isCorrect() && selectedOption() === 'optionA'"
+                [class.reveal-correct]="isAnswerSubmitted() && correctAnswer() === 'optionA'"
+                (click)="selectOption('optionA')" [disabled]="isAnswerSubmitted()">
+                <span class="option-label">A</span>
+                <span class="option-text">{{ currentQuestion.optionA }}</span>
+            </button>
+
+            <!-- Option B -->
+            <button class="option-btn" [class.selected]="selectedOption() === 'optionB'"
+                [class.correct]="isAnswerSubmitted() && isCorrect() && selectedOption() === 'optionB'"
+                [class.wrong]="isAnswerSubmitted() && !isCorrect() && selectedOption() === 'optionB'"
+                [class.reveal-correct]="isAnswerSubmitted() && correctAnswer() === 'optionB'"
+                (click)="selectOption('optionB')" [disabled]="isAnswerSubmitted()">
+                <span class="option-label">B</span>
+                <span class="option-text">{{ currentQuestion.optionB }}</span>
+            </button>
+
+            <!-- Option C -->
+            @if(currentQuestion.optionC) {
+            <button class="option-btn" [class.selected]="selectedOption() === 'optionC'"
+                [class.correct]="isAnswerSubmitted() && isCorrect() && selectedOption() === 'optionC'"
+                [class.wrong]="isAnswerSubmitted() && !isCorrect() && selectedOption() === 'optionC'"
+                [class.reveal-correct]="isAnswerSubmitted() && correctAnswer() === 'optionC'"
+                (click)="selectOption('optionC')" [disabled]="isAnswerSubmitted()">
+                <span class="option-label">C</span>
+                <span class="option-text">{{ currentQuestion.optionC }}</span>
+            </button>
+            }
+
+            <!-- Option D -->
+            @if(currentQuestion.optionD) {
+            <button class="option-btn" [class.selected]="selectedOption() === 'optionD'"
+                [class.correct]="isAnswerSubmitted() && isCorrect() && selectedOption() === 'optionD'"
+                [class.wrong]="isAnswerSubmitted() && !isCorrect() && selectedOption() === 'optionD'"
+                [class.reveal-correct]="isAnswerSubmitted() && correctAnswer() === 'optionD'"
+                (click)="selectOption('optionD')" [disabled]="isAnswerSubmitted()">
+                <span class="option-label">D</span>
+                <span class="option-text">{{ currentQuestion.optionD }}</span>
+            </button>
+            }
+        </div>
+        }
+    </div>
+
+    <div class="footer-actions">
+        @if(!isAnswerSubmitted()) {
+        <button class="btn-primary submit-btn" [disabled]="
+                currentQuestion.type === 'FILL_IN_THE_BLANK' ? !userInput() : 
+                currentQuestion.type === 'MATCHING' ? userMatches().size !== matchingItems().length :
+                !selectedOption()
+            " (click)="submitAnswer()">
+            Submit Answer
+        </button>
+        } @else {
+        <div class="feedback-msg" [class.success]="isCorrect()" [class.error]="!isCorrect()">
+            {{ isCorrect() ? 'Correct! Well done.' : 'Incorrect. The correct answer is shown above.' }}
+        </div>
+        <button class="btn-primary next-btn" (click)="nextQuestion()">
+            {{ currentIndex() === questions().length - 1 ? 'Finish Quiz' : 'Next Question' }}
+        </button>
+        }
+    </div>
+    }
+</div>

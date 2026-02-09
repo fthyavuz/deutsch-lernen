@@ -21,8 +21,8 @@
     </div>
     } @else {
     <div class="flashcard-wrapper">
-        <app-flashcard [vocabulary]="currentVocabulary()!" (click)="next()"
-            title="Click to flip, then click Next below or swipe"></app-flashcard>
+        <app-flashcard [vocabulary]="currentVocabulary()!" title="Click to flip, then click Next below or swipe">
+        </app-flashcard>
 
         <div class="controls">
             <button (click)="prev()" [disabled]="currentIndex() === 0">Previous</button>

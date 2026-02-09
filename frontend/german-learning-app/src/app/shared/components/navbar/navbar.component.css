@@ -1,28 +1,70 @@
 .navbar {
     display: flex;
     justify-content: space-between;
-    padding: 12px 24px;
-    background: #222;
-    color: white;
+    align-items: center;
+    padding: 0 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
 }
 
 .logo {
-    font-weight: bold;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
     text-decoration: none;
-    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.025em;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .links a,
 .links button {
-    margin-left: 16px;
-    color: white;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
     background: none;
     border: none;
     cursor: pointer;
-    text-decoration: none;
 }
 
 .links a:hover,
 .links button:hover {
-    text-decoration: underline;
+    background: var(--primary-light);
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.links button {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.links button:hover {
+    background: var(--primary-hover);
+    color: white;
+}
+
+@media (max-width: 640px) {
+    .navbar {
+        padding: 0 1rem;
+    }
 }
