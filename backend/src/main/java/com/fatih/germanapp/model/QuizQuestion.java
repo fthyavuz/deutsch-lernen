@@ -39,6 +39,7 @@ public class QuizQuestion {
     private String optionB;
     private String optionC;
     private String optionD;
+    private String matchingPairs;
 
     private String correctAnswer;
 

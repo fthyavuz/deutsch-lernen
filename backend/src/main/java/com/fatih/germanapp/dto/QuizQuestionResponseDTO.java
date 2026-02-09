@@ -15,4 +15,6 @@ public class QuizQuestionResponseDTO {
     private String optionC;
     private String optionD;
 
+    private String matchingPairs;
+
 }

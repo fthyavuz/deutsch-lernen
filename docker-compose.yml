@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:15
+    container_name: german-postgres
+    environment:
+      POSTGRES_DB: germanapp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234asd.
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: german-backend
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/germanapp
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234asd.
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend/german-learning-app
+      dockerfile: Dockerfile
+    container_name: german-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+
+volumes:
+  postgres-data:

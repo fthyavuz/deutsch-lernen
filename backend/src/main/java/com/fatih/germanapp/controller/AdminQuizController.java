@@ -50,6 +50,7 @@ public class AdminQuizController {
         question.setOptionB(request.getOptionB());
         question.setOptionC(request.getOptionC());
         question.setOptionD(request.getOptionD());
+        question.setMatchingPairs(request.getMatchingPairs());
         question.setCorrectAnswer(request.getCorrectAnswer());
 
         QuizQuestion saved = quizQuestionRepository.save(question);
@@ -71,6 +72,7 @@ public class AdminQuizController {
         question.setOptionB(request.getOptionB());
         question.setOptionC(request.getOptionC());
         question.setOptionD(request.getOptionD());
+        question.setMatchingPairs(request.getMatchingPairs());
         question.setCorrectAnswer(request.getCorrectAnswer());
 
         QuizQuestion updated = quizQuestionRepository.save(question);
@@ -103,6 +105,7 @@ public class AdminQuizController {
         res.setOptionB(q.getOptionB());
         res.setOptionC(q.getOptionC());
         res.setOptionD(q.getOptionD());
+        res.setMatchingPairs(q.getMatchingPairs());
         res.setCorrectAnswer(q.getCorrectAnswer());
         return res;
     }

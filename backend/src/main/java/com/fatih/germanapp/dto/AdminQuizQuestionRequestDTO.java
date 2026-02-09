@@ -17,6 +17,7 @@ public class AdminQuizQuestionRequestDTO {
     private String optionB;
     private String optionC;
     private String optionD;
+    private String matchingPairs;
 
     private String correctAnswer;
 
