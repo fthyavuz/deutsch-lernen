@@ -14,6 +14,10 @@ export const adminLessonsRoutes: Routes = [
         component: LessonFormComponent
     },
     {
+        path: 'import',
+        loadComponent: () => import('./lesson-import/lesson-import.component').then(m => m.LessonImportComponent)
+    },
+    {
         path: 'edit/:id',
         component: LessonFormComponent
     },

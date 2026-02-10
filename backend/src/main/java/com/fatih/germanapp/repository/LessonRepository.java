@@ -11,4 +11,6 @@ import com.fatih.germanapp.model.Lesson;
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findAllByOrderByLessonOrderAsc();
+
+    java.util.Optional<Lesson> findByTitle(String title);
 }

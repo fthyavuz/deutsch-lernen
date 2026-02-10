@@ -1,0 +1,54 @@
+.json-textarea {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.import-instructions {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color, #4a90e2);
+}
+
+.import-instructions h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.import-instructions p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 0;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.error-alert {
+    background-color: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+}
+
+.success-alert {
+    background-color: #f0fff4;
+    color: #276749;
+    border: 1px solid #9ae6b4;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}

@@ -41,8 +41,7 @@ public class Vocabulary {
     @JsonIgnoreProperties({ "vocabularies", "quizQuestions" })
     private Lesson lesson;
 
-    @OneToMany(mappedBy = "vocabulary", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "vocabulary", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("vocabulary")
     private List<ExampleSentence> exampleSentences;
-
 }

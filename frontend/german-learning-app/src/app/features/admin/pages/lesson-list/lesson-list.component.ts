@@ -27,6 +27,10 @@ export class LessonListComponent {
     this.router.navigate(['/admin/lessons/new']);
   }
 
+  goToImport() {
+    this.router.navigate(['/admin/lessons/import']);
+  }
+
   edit(id: number) {
     this.router.navigate(['/admin/lessons/edit', id]);
   }

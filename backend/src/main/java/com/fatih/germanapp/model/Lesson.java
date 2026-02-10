@@ -33,12 +33,16 @@ public class Lesson {
 
     private int lessonOrder; // for ordering lessons
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("lesson")
     private List<Vocabulary> vocabularies;
 
-    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("lesson")
     private List<QuizQuestion> quizQuestions;
+
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("lesson")
+    private List<UserProgress> userProgressEntries;
 
 }

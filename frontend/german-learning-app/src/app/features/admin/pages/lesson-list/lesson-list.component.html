@@ -4,9 +4,14 @@
             <h1>Lessons Management</h1>
             <p>Create and manage German language lessons</p>
         </div>
-        <button class="btn-primary" (click)="create()">
-            <span>+</span> New Lesson
-        </button>
+        <div class="header-actions">
+            <button class="btn-primary" (click)="create()">
+                <span>+</span> New Lesson
+            </button>
+            <button class="btn-back" (click)="goToImport()" style="margin-top: 0;">
+                <span>✨</span> AI Import
+            </button>
+        </div>
     </div>
 
     <div class="card">
