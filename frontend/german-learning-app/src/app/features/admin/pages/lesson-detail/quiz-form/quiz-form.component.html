@@ -50,10 +50,11 @@
                 <label for="correctAnswer">Correct Answer</label>
                 <select id="correctAnswer" class="form-control" formControlName="correctAnswer">
                     <option value="">Select the correct option</option>
-                    <option value="A">Option A</option>
-                    <option value="B">Option B</option>
-                    <option value="C">Option C</option>
-                    <option value="D">Option D</option>
+                    <option [value]="form.get('optionA')?.value">Option A</option>
+                    <option [value]="form.get('optionB')?.value">Option B</option>
+                    <option [value]="form.get('optionC')?.value">Option C</option>
+                    <option [value]="form.get('optionD')?.value">Option D</option>
+
                 </select>
             </div>
             } @else if (form.get('type')?.value === 'MATCHING') {
