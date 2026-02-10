@@ -1,22 +1,39 @@
-<div class="quiz-list">
+<div class="quiz-grid">
     @for (quiz of quizzes(); track quiz.id) {
-    <div class="quiz-card">
-        <div class="quiz-header">
-            <span class="badge">{{ quiz.type }}</span>
-            <div class="actions">
-                <button (click)="editQuiz(quiz.id)">Edit</button>
-                <button class="delete" (click)="deleteQuiz(quiz.id)">Delete</button>
+    <div class="admin-quiz-card">
+        <div class="quiz-badge-row">
+            <span class="type-badge">{{ quiz.type }}</span>
+            <div class="quiz-actions">
+                <button class="btn-icon" (click)="editQuiz(quiz.id)" title="Edit Quiz">✏️</button>
+                <button class="btn-icon btn-danger" (click)="deleteQuiz(quiz.id)" title="Delete Quiz">🗑️</button>
             </div>
         </div>
-        <p class="question">{{ quiz.question }}</p>
-        <div class="options" *ngIf="quiz.type === 'MULTIPLE_CHOICE'">
-            <span [class.correct]="quiz.correctAnswer === 'A'">A: {{ quiz.optionA }}</span>
-            <span [class.correct]="quiz.correctAnswer === 'B'">B: {{ quiz.optionB }}</span>
-            <span [class.correct]="quiz.correctAnswer === 'C'">C: {{ quiz.optionC }}</span>
-            <span [class.correct]="quiz.correctAnswer === 'D'">D: {{ quiz.optionD }}</span>
+        <div class="quiz-content">
+            <h4 class="question-text">{{ quiz.question }}</h4>
+
+            <div class="options-container" *ngIf="quiz.type === 'MULTIPLE_CHOICE'">
+                <div class="option-item" [class.is-correct]="quiz.correctAnswer === 'A'">
+                    <span class="option-label">A</span> {{ quiz.optionA }}
+                </div>
+                <div class="option-item" [class.is-correct]="quiz.correctAnswer === 'B'">
+                    <span class="option-label">B</span> {{ quiz.optionB }}
+                </div>
+                <div class="option-item" [class.is-correct]="quiz.correctAnswer === 'C'">
+                    <span class="option-label">C</span> {{ quiz.optionC }}
+                </div>
+                <div class="option-item" [class.is-correct]="quiz.correctAnswer === 'D'">
+                    <span class="option-label">D</span> {{ quiz.optionD }}
+                </div>
+            </div>
+
+            <div class="answer-reveal" *ngIf="quiz.type !== 'MULTIPLE_CHOICE'">
+                <strong>Correct Answer:</strong> {{ quiz.correctAnswer }}
+            </div>
         </div>
     </div>
     } @empty {
-    <p class="empty-state">No quizzes added yet.</p>
+    <div class="empty-state">
+        <p>No quizzes added yet. Create a quiz to test your students!</p>
+    </div>
     }
 </div>

@@ -1,14 +1,11 @@
-<div class="vocabulary-list">
-    @if (vocabularies().length === 0) {
-    <p class="empty-state">No vocabulary added yet.</p>
-    } @else {
-    <table>
+<div class="table-responsive">
+    <table class="admin-table">
         <thead>
             <tr>
                 <th>German</th>
                 <th>English</th>
                 <th>Turkish</th>
-                <th>Actions</th>
+                <th class="text-right">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,13 +16,17 @@
                 </td>
                 <td>{{ vocab.englishMeaning }}</td>
                 <td>{{ vocab.turkishMeaning }}</td>
-                <td class="actions">
-                    <button class="btn-edit" (click)="edit(vocab.id)">Edit</button>
-                    <button class="btn-delete" (click)="delete(vocab.id)">Delete</button>
+                <td class="text-right">
+                    <button class="btn-icon" (click)="edit(vocab.id)" title="Edit Word">✏️</button>
+                    <button class="btn-icon btn-danger" (click)="delete(vocab.id)" title="Delete Word">🗑️</button>
                 </td>
             </tr>
             }
         </tbody>
     </table>
+    @if (vocabularies().length === 0) {
+    <div class="empty-state">
+        <p>No vocabulary added yet. Start by adding some words!</p>
+    </div>
     }
 </div>

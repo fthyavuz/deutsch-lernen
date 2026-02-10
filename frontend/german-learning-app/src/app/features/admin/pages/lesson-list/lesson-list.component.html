@@ -1,23 +1,44 @@
-<h3>Lessons</h3>
+<div class="admin-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Lessons Management</h1>
+            <p>Create and manage German language lessons</p>
+        </div>
+        <button class="btn-primary" (click)="create()">
+            <span>+</span> New Lesson
+        </button>
+    </div>
 
-<button (click)="create()">+ New Lesson</button>
-
-<table *ngIf="lessons().length">
-    <tr>
-        <th>Order</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-
-    <tr *ngFor="let lesson of lessons()">
-        <td>{{ lesson.lessonOrder }}</td>
-        <td>{{ lesson.title }}</td>
-        <td>{{ lesson.description }}</td>
-        <td>
-            <button (click)="open(lesson.id!)">Open</button>
-            <button (click)="edit(lesson.id!)">Edit</button>
-            <button (click)="remove(lesson.id!)">Delete</button>
-        </td>
-    </tr>
-</table>
+    <div class="card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Order</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let lesson of lessons()">
+                        <td>
+                            <span class="lesson-order-badge">{{ lesson.lessonOrder }}</span>
+                        </td>
+                        <td class="lesson-title-cell">{{ lesson.title }}</td>
+                        <td class="lesson-desc-cell" [title]="lesson.description">{{ lesson.description }}</td>
+                        <td class="text-right">
+                            <button class="btn-icon" (click)="open(lesson.id!)" title="Open Content">👁️</button>
+                            <button class="btn-icon" (click)="edit(lesson.id!)" title="Edit Lesson">✏️</button>
+                            <button class="btn-icon btn-danger" (click)="remove(lesson.id!)"
+                                title="Delete Lesson">🗑️</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngIf="!lessons().length" class="empty-state">
+                <p>No lessons found. Start by creating your first lesson!</p>
+            </div>
+        </div>
+    </div>
+</div>

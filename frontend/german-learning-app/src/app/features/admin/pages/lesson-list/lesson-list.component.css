@@ -1,0 +1,88 @@
+/* Specific Column Styling */
+.admin-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    /* If available, otherwise Inter is fine */
+}
+
+/* Lesson Order Style */
+.lesson-order-badge {
+    background: var(--bg-main);
+    color: var(--primary);
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+}
+
+/* Title Styling */
+.lesson-title-cell {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* Description Styling */
+.lesson-desc-cell {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Animations */
+.admin-container {
+    animation: fadeIn 0.4s ease-out;
+}
+
+.card {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Action tooltips style refinement (native titles are used, but we can style the button more) */
+.btn-icon:hover {
+    transform: scale(1.1);
+}
+
+.btn-icon.btn-danger:hover {
+    background-color: #fef2f2;
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+/* Empty State Styling refinement */
+.empty-state {
+    padding: 5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}

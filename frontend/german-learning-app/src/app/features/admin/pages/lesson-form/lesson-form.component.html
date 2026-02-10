@@ -1,29 +1,39 @@
-<div class="page-header">
-    <button type="button" class="btn-back" (click)="cancel()">← Back to Lessons</button>
+<div class="admin-container">
+    <div class="page-header">
+        <div class="header-left">
+            <button class="btn-back" (click)="cancel()">← Back</button>
+            <div class="header-content" style="margin-left: 1.5rem; margin-top: 1rem;">
+                <h1>{{ isEditMode ? 'Edit' : 'Create' }} Lesson</h1>
+                <p>Provide the details for the German lesson</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card form-card">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" class="form-control" formControlName="title"
+                    placeholder="e.g., Basic Greetings" />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" class="form-control" formControlName="description" rows="4"
+                    placeholder="Briefly describe what students will learn..."></textarea>
+            </div>
+
+            <div class="form-group" style="max-width: 200px;">
+                <label for="order">Display Order</label>
+                <input type="number" id="order" class="form-control" formControlName="lessonOrder" placeholder="1" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary" [disabled]="form.invalid">
+                    {{ isEditMode ? 'Update Lesson' : 'Create Lesson' }}
+                </button>
+                <button type="button" class="btn-back" (click)="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>
-
-<h3>{{ isEditMode ? 'Edit Lesson' : 'Create Lesson' }}</h3>
-
-<form [formGroup]="form" (ngSubmit)="submit()">
-
-    <label>
-        Title
-        <input type="text" formControlName="title" />
-    </label>
-
-    <label>
-        Description
-        <textarea formControlName="description"></textarea>
-    </label>
-
-    <label>
-        Lesson Order
-        <input type="number" formControlName="lessonOrder" />
-    </label>
-
-    <button type="submit" [disabled]="form.invalid">
-        {{ isEditMode ? 'Update' : 'Create' }}
-    </button>
-
-    <button type="button" (click)="cancel()">Cancel</button>
-</form>

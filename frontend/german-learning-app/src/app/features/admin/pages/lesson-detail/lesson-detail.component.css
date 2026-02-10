@@ -1,49 +1,54 @@
-/* Page Header */
-.page-header {
-    margin-bottom: 1.5rem;
-}
-
-.btn-back {
-    background: transparent;
-    border: 1px solid #d1d5db;
-    color: #4b5563;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.btn-back:hover {
-    background: #f3f4f6;
-    border-color: #9ca3af;
-}
-
 /* Tabs */
 .tabs {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    border-bottom: 2px solid #eee;
+    background: var(--bg-main);
+    padding: 0 1rem;
+    border-bottom: 1px solid var(--border);
 }
 
 .tabs button {
     background: none;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 1.25rem 1.5rem;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-muted);
     border-bottom: 2px solid transparent;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tabs button:hover {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.05);
 }
 
 .tabs button.active {
-    border-color: #3f51b5;
-    color: #3f51b5;
-    font-weight: bold;
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 700;
 }
 
-.actions {
-    margin-bottom: 1rem;
+.tab-icon {
+    font-size: 1.1rem;
+}
+
+.content-body {
+    padding: 2rem;
+}
+
+.tab-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.tab-actions h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
 }

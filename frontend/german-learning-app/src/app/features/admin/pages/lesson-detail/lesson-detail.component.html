@@ -1,30 +1,38 @@
-<div class="page-header">
-    <button class="btn-back" (click)="goBack()">← Back to Lessons</button>
-</div>
-
-<h3>{{ lessonTitle() }}</h3>
-
-<div class="tabs">
-    <button (click)="activeTab.set('vocab')" [class.active]="activeTab() === 'vocab'">
-        Vocabulary
-    </button>
-    <button (click)="activeTab.set('quiz')" [class.active]="activeTab() === 'quiz'">
-        Quizzes
-    </button>
-</div>
-
-<div class="content">
-    @if (activeTab() === 'vocab') {
-    <div class="actions">
-        <button (click)="addVocabulary()">+ Add Word</button>
+<div class="admin-container">
+    <div class="page-header">
+        <div class="header-left">
+            <button class="btn-back" (click)="goBack()">← Back</button>
+            <div class="header-content" style="margin-left: 1.5rem; margin-top: 1rem;">
+                <h1>{{ lessonTitle() }}</h1>
+                <p>Manage vocabulary and quizzes for this lesson</p>
+            </div>
+        </div>
     </div>
-    <app-vocabulary-list [lessonId]="lessonId()"></app-vocabulary-list>
-    } @else {
-    <div class="actions">
-        <!-- New Add Button -->
-        <button (click)="addQuiz()">+ Add Quiz</button>
+
+    <div class="card">
+        <div class="tabs">
+            <button (click)="activeTab.set('vocab')" [class.active]="activeTab() === 'vocab'">
+                <span class="tab-icon">📖</span> Vocabulary
+            </button>
+            <button (click)="activeTab.set('quiz')" [class.active]="activeTab() === 'quiz'">
+                <span class="tab-icon">❓</span> Quizzes
+            </button>
+        </div>
+
+        <div class="content-body">
+            @if (activeTab() === 'vocab') {
+            <div class="tab-actions">
+                <h3>Vocabulary Words</h3>
+                <button class="btn-primary" (click)="addVocabulary()">+ Add Word</button>
+            </div>
+            <app-vocabulary-list [lessonId]="lessonId()"></app-vocabulary-list>
+            } @else {
+            <div class="tab-actions">
+                <h3>Lesson Quizzes</h3>
+                <button class="btn-primary" (click)="addQuiz()">+ Add Quiz</button>
+            </div>
+            <app-quiz-list [lessonId]="lessonId()"></app-quiz-list>
+            }
+        </div>
     </div>
-    <!-- New List Component -->
-    <app-quiz-list [lessonId]="lessonId()"></app-quiz-list>
-    }
 </div>

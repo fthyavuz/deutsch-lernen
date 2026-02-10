@@ -1,51 +1,78 @@
-<div class="page-header">
-    <button type="button" class="btn-back" (click)="cancel()">← Back to Lesson Details</button>
+<div class="admin-container">
+    <div class="page-header">
+        <div class="header-left">
+            <button type="button" class="btn-back" (click)="cancel()">← Back</button>
+            <div class="header-content" style="margin-left: 1.5rem; margin-top: 1rem;">
+                <h1>{{ vocabularyId ? 'Edit' : 'Add' }} Vocabulary</h1>
+                <p>Add words, explanations, and example sentences</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card form-card" style="max-width: 900px;">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-grid">
+                <div class="form-section">
+                    <h3 class="section-title">Word Details</h3>
+                    <div class="form-group">
+                        <label for="germanWord">German Word</label>
+                        <input id="germanWord" class="form-control" formControlName="germanWord"
+                            placeholder="e.g., Hallo" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="englishMeaning">English Meaning</label>
+                        <input id="englishMeaning" class="form-control" formControlName="englishMeaning"
+                            placeholder="e.g., Hello" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="turkishMeaning">Turkish Meaning</label>
+                        <input id="turkishMeaning" class="form-control" formControlName="turkishMeaning"
+                            placeholder="e.g., Merhaba" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="germanExplanation">German Explanation</label>
+                        <textarea id="germanExplanation" class="form-control" formControlName="germanExplanation"
+                            rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="relatedWords">Related Words</label>
+                        <input id="relatedWords" class="form-control" formControlName="relatedWords"
+                            placeholder="Comma separated..." />
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">Example Sentence</h3>
+                    <div class="form-group">
+                        <label for="germanSentence">German Sentence</label>
+                        <textarea id="germanSentence" class="form-control" formControlName="germanSentence"
+                            rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="englishSentenceTranslation">English Translation</label>
+                        <textarea id="englishSentenceTranslation" class="form-control"
+                            formControlName="englishSentenceTranslation" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="turkishSentenceTranslation">Turkish Translation</label>
+                        <textarea id="turkishSentenceTranslation" class="form-control"
+                            formControlName="turkishSentenceTranslation" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary" [disabled]="form.invalid">
+                    {{ vocabularyId ? 'Update Word' : 'Create Word' }}
+                </button>
+                <button type="button" class="btn-back" (click)="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>
-
-<h3>{{ vocabularyId ? 'Edit' : 'Add' }} Vocabulary</h3>
-
-<form [formGroup]="form" (ngSubmit)="submit()">
-    <label>
-        German Word
-        <input formControlName="germanWord" />
-    </label>
-
-    <label>
-        English Meaning
-        <input formControlName="englishMeaning" />
-    </label>
-
-    <label>
-        Turkish Meaning
-        <input formControlName="turkishMeaning" />
-    </label>
-
-    <label>
-        German Explanation
-        <textarea formControlName="germanExplanation"></textarea>
-    </label>
-
-    <label>
-        Related Words
-        <input formControlName="relatedWords" placeholder="Comma separated..." />
-    </label>
-
-    <h4>Example Sentence</h4>
-    <label>
-        German Sentence
-        <textarea formControlName="germanSentence"></textarea>
-    </label>
-
-    <label>
-        English Sentence Translation
-        <textarea formControlName="englishSentenceTranslation"></textarea>
-    </label>
-
-    <label>
-        Turkish Sentence Translation
-        <textarea formControlName="turkishSentenceTranslation"></textarea>
-    </label>
-
-    <button type="submit" [disabled]="form.invalid">{{ vocabularyId ? 'Update' : 'Create' }}</button>
-    <button type="button" (click)="cancel()">Cancel</button>
-</form>
