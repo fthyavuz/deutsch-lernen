@@ -4,9 +4,11 @@ import com.fatih.germanapp.dto.*;
 import com.fatih.germanapp.model.*;
 import com.fatih.germanapp.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminImportService {
@@ -18,6 +20,8 @@ public class AdminImportService {
 
     @Transactional
     public Lesson importLesson(LessonImportDTO importDTO) {
+        log.info("Starting bulk import for lesson: {}", importDTO.getTitle());
+
         // 1. Check if lesson exists by title
         Lesson lesson = lessonRepository.findByTitle(importDTO.getTitle())
                 .orElse(new Lesson());
@@ -92,6 +96,8 @@ public class AdminImportService {
             }
         }
 
+        log.info("Successfully imported lesson: {} with {} vocabularies", lesson.getTitle(),
+                importDTO.getVocabularies() != null ? importDTO.getVocabularies().size() : 0);
         return lesson;
     }
 }

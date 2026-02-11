@@ -15,6 +15,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -42,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             email = jwtUtil.extractEmail(token);
         } catch (Exception e) {
+            log.warn("Invalid JWT token received: {}", e.getMessage());
             filterChain.doFilter(request, response);
             return;
         }

@@ -1,0 +1,6 @@
+# Handle line endings automatically for text files
+* text=auto
+
+# Ensure Maven wrapper scripts keep their line endings
+**/mvnw text eol=lf
+**/*.cmd text eol=crlf

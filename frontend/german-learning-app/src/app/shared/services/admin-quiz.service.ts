@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AdminQuizQuestionRequestDTO, AdminQuizQuestionResponseDTO } from '../models/admin-quiz.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AdminQuizService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/admin/quizzes';
+    private apiUrl = `${environment.apiUrl}/admin/quizzes`;
 
     getByLesson(lessonId: number): Observable<AdminQuizQuestionResponseDTO[]> {
         return this.http.get<AdminQuizQuestionResponseDTO[]>(`${this.apiUrl}/lesson/${lessonId}`);

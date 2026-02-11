@@ -46,6 +46,7 @@ export class StudentLessonDetailComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.loading.set(false);
+        this.router.navigate(['/404']);
       }
     });
   }

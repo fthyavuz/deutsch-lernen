@@ -3,9 +3,9 @@ services:
     image: postgres:15
     container_name: german-postgres
     environment:
-      POSTGRES_DB: germanapp
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234asd.
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -19,9 +19,10 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/germanapp
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=1234asd.
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     ports:
       - "8080:8080"

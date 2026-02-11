@@ -42,5 +42,13 @@ export const routes: Routes = [
         loadChildren: () =>
             import('./features/admin/admin.routes')
                 .then(m => m.adminRoutes)
+    },
+    {
+        path: '404',
+        loadComponent: () => import('./shared/components/not-found/not-found.component').then(m => m.NotFoundComponent)
+    },
+    {
+        path: '**',
+        redirectTo: '404'
     }
 ];

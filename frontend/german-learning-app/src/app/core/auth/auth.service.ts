@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface LoginRequest {
   email: string;
@@ -30,7 +31,7 @@ interface RegisterResponse {
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly tokenKey = 'jwtToken';
   private readonly roleKey = 'userRole';
 

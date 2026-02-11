@@ -1,0 +1,48 @@
+# Environment variables (Sensitive!)
+.env
+.env.local
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+.factorypath
+.springBeans
+.sts4-cache
+
+# Java / Maven (Backend)
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+**/mvnw
+**/mvnw.cmd
+HELP.md
+
+# Node / Angular (Frontend)
+**/node_modules/
+**/dist/
+**/tmp/
+**/out-tsc/
+**/bazel-out/
+**/.angular/
+**/.sass-cache/
+**/connect.lock
+**/coverage/
+**/*.log
+**/typings/
+**/__screenshots__/
+
+# Docker
+.docker/

@@ -20,6 +20,9 @@ import com.fatih.germanapp.repository.LessonRepository;
 import com.fatih.germanapp.repository.UserProgressRepository;
 import com.fatih.germanapp.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/progress")
 public class UserProgressController {
@@ -63,6 +66,9 @@ public class UserProgressController {
         }
 
         UserProgress saved = userProgressRepository.save(progress);
+
+        log.info("Progress saved for user {}: Lesson '{}' - Completed: {}, Score: {}",
+                email, lesson.getTitle(), saved.isCompleted(), saved.getScore());
 
         UserProgressResponseDTO dto = new UserProgressResponseDTO();
         dto.setLessonId(lesson.getId());

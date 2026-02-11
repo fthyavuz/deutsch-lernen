@@ -19,6 +19,9 @@ import com.fatih.germanapp.model.User;
 import com.fatih.germanapp.repository.UserRepository;
 import com.fatih.germanapp.security.JwtUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -53,6 +56,7 @@ public class AuthController {
                                 user.getEmail(),
                                 user.getRole().name());
                 Role role = user.getRole();
+                log.info("User logged in successfully: {}", user.getEmail());
                 return new LoginResponseDTO(token, role, user.getEmail());
         }
 
@@ -75,6 +79,8 @@ public class AuthController {
                 String token = jwtUtil.generateToken(
                                 savedUser.getEmail(),
                                 savedUser.getRole().name());
+
+                log.info("New user registered successfully: {}", savedUser.getEmail());
 
                 return new RegisterResponseDTO(
                                 savedUser.getId(),
