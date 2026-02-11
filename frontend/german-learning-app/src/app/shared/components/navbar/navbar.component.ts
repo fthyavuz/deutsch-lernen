@@ -15,6 +15,7 @@ export class NavbarComponent {
 
   isLoggedIn = computed(() => this.authService.isLoggedInSignal());
   isAdmin = computed(() => this.authService.isAdmin());
+  userEmail = computed(() => this.authService.userEmailSignal());
 
   logout() {
     this.authService.logout();

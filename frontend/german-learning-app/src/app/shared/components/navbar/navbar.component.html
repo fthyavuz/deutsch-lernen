@@ -9,6 +9,9 @@
         <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
         <a *ngIf="!isLoggedIn()" routerLink="/register">Register</a>
 
-        <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
+        <div *ngIf="isLoggedIn()" class="user-info">
+            <span class="email">{{ userEmail() }}</span>
+            <button (click)="logout()">Logout</button>
+        </div>
     </div>
 </nav>

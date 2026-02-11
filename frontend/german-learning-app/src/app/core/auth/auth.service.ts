@@ -11,6 +11,7 @@ interface LoginRequest {
 interface LoginResponse {
   token: string;
   role: 'ADMIN' | 'STUDENT';
+  email: string;
 }
 
 interface RegisterRequest {
@@ -21,6 +22,7 @@ interface RegisterRequest {
 interface RegisterResponse {
   email: string;
   role: 'ADMIN' | 'STUDENT';
+  token: string;
 }
 
 @Injectable({
@@ -34,8 +36,8 @@ export class AuthService {
 
   // reactive login state
   readonly isLoggedInSignal = signal<boolean>(false);
-
   readonly userRoleSignal = signal<string | null>(null);
+  readonly userEmailSignal = signal<string | null>(null);
 
   constructor() {
     this.checkTokenOnLoad();
@@ -45,21 +47,27 @@ export class AuthService {
     const token = this.getToken();
     if (token && !this.isTokenExpired()) {
       const role = localStorage.getItem(this.roleKey);
+      const email = localStorage.getItem('userEmail');
       this.isLoggedInSignal.set(true);
       this.userRoleSignal.set(role);
+      this.userEmailSignal.set(email);
     } else {
       this.logout();
     }
   }
 
   register(request: RegisterRequest): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, request);
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/register`, request).pipe(
+      tap(response => {
+        this.setSession(response.token, response.role, response.email);
+      })
+    );
   }
 
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request).pipe(
       tap(response => {
-        this.setSession(response.token, response.role);
+        this.setSession(response.token, response.role, response.email);
       })
     );
   }
@@ -75,8 +83,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.roleKey);
+    localStorage.removeItem('userEmail');
     this.isLoggedInSignal.set(false);
     this.userRoleSignal.set(null);
+    this.userEmailSignal.set(null);
   }
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
@@ -99,12 +109,14 @@ export class AuthService {
     const expiry = decoded.exp * 1000; // exp is in seconds
     return Date.now() > expiry;
   }
-  private setSession(token: string, role: string) {
+  private setSession(token: string, role: string, email: string) {
     localStorage.setItem(this.tokenKey, token);
+    localStorage.setItem('userEmail', email);
     if (role) {
       localStorage.setItem(this.roleKey, role);
       this.userRoleSignal.set(role);
     }
+    this.userEmailSignal.set(email);
     this.isLoggedInSignal.set(true);
   }
 

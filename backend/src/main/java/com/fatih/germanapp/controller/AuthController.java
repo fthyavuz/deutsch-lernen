@@ -53,7 +53,7 @@ public class AuthController {
                                 user.getEmail(),
                                 user.getRole().name());
                 Role role = user.getRole();
-                return new LoginResponseDTO(token,role);
+                return new LoginResponseDTO(token, role, user.getEmail());
         }
 
         @PostMapping("/register")
@@ -72,9 +72,14 @@ public class AuthController {
 
                 User savedUser = userRepository.save(user);
 
+                String token = jwtUtil.generateToken(
+                                savedUser.getEmail(),
+                                savedUser.getRole().name());
+
                 return new RegisterResponseDTO(
                                 savedUser.getId(),
                                 savedUser.getEmail(),
-                                savedUser.getRole().name());
+                                savedUser.getRole(),
+                                token);
         }
 }

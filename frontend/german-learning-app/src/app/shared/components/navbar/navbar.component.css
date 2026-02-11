@@ -63,6 +63,26 @@
     color: white;
 }
 
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 0.5rem;
+}
+
+.user-info .email {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: var(--bg-soft);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full, 50px);
+    border: 1px solid var(--border);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 @media (max-width: 640px) {
     .navbar {
         padding: 0 1rem;

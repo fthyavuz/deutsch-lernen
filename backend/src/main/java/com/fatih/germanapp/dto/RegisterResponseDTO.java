@@ -9,11 +9,13 @@ import lombok.Setter;
 public class RegisterResponseDTO {
     private Long id;
     private String email;
-    private String role;
+    private Role role;
+    private String token;
 
-    public RegisterResponseDTO(Long id, String email, String role) {
+    public RegisterResponseDTO(Long id, String email, Role role, String token) {
         this.id = id;
         this.email = email;
         this.role = role;
+        this.token = token;
     }
 }
