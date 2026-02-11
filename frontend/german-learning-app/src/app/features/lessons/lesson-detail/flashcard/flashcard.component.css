@@ -7,6 +7,30 @@
     cursor: pointer;
 }
 
+@media (max-width: 640px) {
+    .flashcard-container {
+        height: 450px;
+        /* Slightly taller for mobile to fit more content */
+    }
+
+    .card-front,
+    .card-back {
+        padding: 1.5rem !important;
+    }
+
+    .german-word {
+        font-size: 2rem !important;
+    }
+
+    .german-explanation {
+        font-size: 1rem !important;
+    }
+
+    .translations {
+        flex-wrap: wrap;
+    }
+}
+
 .card-inner {
     position: relative;
     width: 100%;

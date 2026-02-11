@@ -30,6 +30,30 @@
     gap: 2rem;
 }
 
+/* RESPONSIVE OVERRIDES */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2.2rem;
+    }
+
+    .page-header p {
+        font-size: 1rem;
+    }
+
+    .lesson-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
 .lesson-card {
     background: var(--bg-card);
     border-radius: var(--radius-lg);

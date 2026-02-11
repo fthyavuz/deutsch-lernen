@@ -7,6 +7,33 @@
     flex-direction: column;
 }
 
+@media (max-width: 640px) {
+    .quiz-container {
+        padding: 1rem;
+    }
+
+    .question-text {
+        font-size: 1.25rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .option-btn {
+        padding: 1rem !important;
+    }
+
+    .footer-actions {
+        position: fixed;
+        bottom: 80px;
+        /* Above our new bottom nav */
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+        z-index: 900;
+    }
+}
+
 .page-header {
     margin-bottom: 1.5rem;
 }

@@ -8,6 +8,13 @@
     text-align: center;
 }
 
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+    }
+}
+
 h2 {
     margin: 0 0 0.5rem;
     color: #1a1a1a;

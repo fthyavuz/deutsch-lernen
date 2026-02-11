@@ -151,14 +151,40 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .matching-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        grid-template-columns: 1fr 1fr;
+        /* Keep side-by-side */
+        gap: 0.5rem;
+        /* Tighter gap */
     }
 
-    .translation-column {
-        border-top: 2px dashed #e5e7eb;
-        padding-top: 1.5rem;
+    .matching-item {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+        flex-direction: column;
+        /* Stack arrow below word if needed */
+        text-align: center;
+    }
+
+    .german-item .match-arrow {
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
+        font-size: 0.7rem;
+    }
+
+    .unmatch-btn {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.6rem;
+    }
+
+    .matching-instructions p {
+        font-size: 0.8rem;
     }
 }
