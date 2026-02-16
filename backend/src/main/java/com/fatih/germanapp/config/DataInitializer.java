@@ -7,14 +7,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final com.fatih.germanapp.repository.LevelRepository levelRepository;
-    private final com.fatih.germanapp.repository.LessonRepository lessonRepository;
+    @Value("${app.admin.email:admin@example.com}")
+    private String adminEmail;
+
+    @Value("${app.admin.password:admin123}")
+    private String adminPassword;
 
     public DataInitializer(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
@@ -29,14 +31,14 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         // Initialize Admin User
-        if (userRepository.findByEmail("admin@example.com").isEmpty()) {
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
             com.fatih.germanapp.model.User admin = new com.fatih.germanapp.model.User();
-            admin.setEmail("admin@example.com");
-            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setEmail(adminEmail);
+            admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setRole(Role.ADMIN);
             admin.setCreatedAt(LocalDateTime.now());
             userRepository.save(admin);
-            System.out.println("Admin user created: admin@example.com / admin123");
+            System.out.println("Admin user created: " + adminEmail);
         }
 
         // Initialize Levels (A1.1 through C1.2)

@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15
+    container_name: german-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-germanapp}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    restart: always
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend:
+    image: ghcr.io/fthyavuz/deutsch-lernen-backend:latest
+    container_name: german-backend
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-germanapp}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - APP_ADMIN_EMAIL=${ADMIN_EMAIL}
+      - APP_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    restart: always
+
+  frontend:
+    image: ghcr.io/fthyavuz/deutsch-lernen-frontend:latest
+    container_name: german-frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    restart: always
+
+volumes:
+  postgres-data:
