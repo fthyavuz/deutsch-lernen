@@ -23,9 +23,22 @@
                     placeholder="Briefly describe what students will learn..."></textarea>
             </div>
 
-            <div class="form-group" style="max-width: 200px;">
-                <label for="order">Display Order</label>
-                <input type="number" id="order" class="form-control" formControlName="lessonOrder" placeholder="1" />
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="level">Level</label>
+                    <select id="level" class="form-control" formControlName="levelId">
+                        <option [value]="null" disabled>Select a Level</option>
+                        @for (level of levels(); track level.id) {
+                        <option [value]="level.id">{{ level.code }} - {{ level.title }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group" style="max-width: 200px;">
+                    <label for="order">Display Order</label>
+                    <input type="number" id="order" class="form-control" formControlName="lessonOrder"
+                        placeholder="1" />
+                </div>
             </div>
 
             <div class="form-actions">

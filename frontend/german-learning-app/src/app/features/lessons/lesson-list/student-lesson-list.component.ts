@@ -1,13 +1,20 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { LessonService } from '../../../shared/services/lesson.service';
+import { LevelService } from '../../../shared/services/level.service';
 import { ProgressService } from '../../../shared/services/progress.service';
-import { LessonDTO } from '../../../shared/models/lesson.model';
+import { LevelDTO } from '../../../shared/models/level.model';
 import { UserProgressResponseDTO } from '../../../shared/models/user-progress.model';
+import { LessonDTO } from '../../../shared/models/lesson.model';
 
 interface LessonWithProgress extends LessonDTO {
   progress?: UserProgressResponseDTO;
+}
+
+interface LevelWithProgress extends Omit<LevelDTO, 'lessons'> {
+  lessons: LessonWithProgress[];
+  completedCount: number;
+  totalCount: number;
 }
 
 @Component({
@@ -18,11 +25,11 @@ interface LessonWithProgress extends LessonDTO {
   styleUrl: './student-lesson-list.component.css',
 })
 export class StudentLessonListComponent implements OnInit {
-  private lessonService = inject(LessonService);
+  private levelService = inject(LevelService);
   private progressService = inject(ProgressService);
   private router = inject(Router);
 
-  lessons = signal<LessonWithProgress[]>([]);
+  levels = signal<LevelWithProgress[]>([]);
   loading = signal<boolean>(true);
 
   ngOnInit() {
@@ -31,35 +38,53 @@ export class StudentLessonListComponent implements OnInit {
 
   loadData() {
     this.loading.set(true);
-    // Fetch both lessons and progress
-    const lessons$ = this.lessonService.getAllLessons();
+
+    // Fetch levels (which include lessons) and progress
+    const levels$ = this.levelService.getAllLevels();
     const progress$ = this.progressService.getMyProgress();
 
-    // Use a simple approach: subscribe to both, then combine
-    // In a real app, forkJoin is better, but this is fine for now
-    lessons$.subscribe({
-      next: (allLessons) => {
+    levels$.subscribe({
+      next: (allLevels) => {
         progress$.subscribe({
           next: (userProgress) => {
-            const combined = allLessons.map(lesson => {
-              const prog = userProgress.find(p => p.lessonId === lesson.id);
-              return { ...lesson, progress: prog };
+            const combined: LevelWithProgress[] = allLevels.map(level => {
+              const lessonsWithProg = (level.lessons || []).map(lesson => {
+                const prog = userProgress.find(p => p.lessonId === lesson.id);
+                return { ...lesson, progress: prog };
+              });
+
+              // Sort lessons within the level
+              lessonsWithProg.sort((a, b) => (a.lessonOrder || a.id) - (b.lessonOrder || b.id));
+
+              const completedCount = lessonsWithProg.filter(l => l.progress?.completed).length;
+
+              return {
+                ...level,
+                lessons: lessonsWithProg,
+                completedCount,
+                totalCount: lessonsWithProg.length
+              };
             });
-            // Sort by lessonOrder if available, or id
-            combined.sort((a, b) => (a.lessonOrder || a.id) - (b.lessonOrder || b.id));
-            this.lessons.set(combined);
+
+            this.levels.set(combined);
             this.loading.set(false);
           },
           error: (err) => {
             console.error('Error fetching progress:', err);
-            // Still show lessons even if progress fails
-            this.lessons.set(allLessons);
+            // Still show levels/lessons even if progress fails
+            const partial = allLevels.map(lvl => ({
+              ...lvl,
+              lessons: lvl.lessons || [],
+              completedCount: 0,
+              totalCount: (lvl.lessons || []).length
+            }));
+            this.levels.set(partial);
             this.loading.set(false);
           }
         });
       },
       error: (err) => {
-        console.error('Error fetching lessons:', err);
+        console.error('Error fetching levels:', err);
         this.loading.set(false);
       }
     });

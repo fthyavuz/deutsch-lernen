@@ -3,4 +3,6 @@ export interface AdminLessonDTO {
     title: string;
     description: string;
     lessonOrder: number;
+    levelId?: number;
+    levelCode?: string;
 }

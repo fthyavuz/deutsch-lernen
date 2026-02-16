@@ -9,4 +9,5 @@ public class AdminLessonRequestDTO {
     private String title;
     private String description;
     private int lessonOrder;
+    private Long levelId;
 }

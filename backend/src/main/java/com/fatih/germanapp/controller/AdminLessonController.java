@@ -23,9 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AdminLessonController {
 
     private final LessonRepository lessonRepository;
+    private final com.fatih.germanapp.repository.LevelRepository levelRepository;
 
-    public AdminLessonController(LessonRepository lessonRepository) {
+    public AdminLessonController(LessonRepository lessonRepository,
+            com.fatih.germanapp.repository.LevelRepository levelRepository) {
         this.lessonRepository = lessonRepository;
+        this.levelRepository = levelRepository;
     }
 
     // CREATE
@@ -37,6 +40,12 @@ public class AdminLessonController {
         lesson.setTitle(request.getTitle());
         lesson.setDescription(request.getDescription());
         lesson.setLessonOrder(request.getLessonOrder());
+
+        if (request.getLevelId() != null) {
+            com.fatih.germanapp.model.Level level = levelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Level not found"));
+            lesson.setLevel(level);
+        }
 
         Lesson saved = lessonRepository.save(lesson);
 
@@ -55,6 +64,12 @@ public class AdminLessonController {
         lesson.setTitle(request.getTitle());
         lesson.setDescription(request.getDescription());
         lesson.setLessonOrder(request.getLessonOrder());
+
+        if (request.getLevelId() != null) {
+            com.fatih.germanapp.model.Level level = levelRepository.findById(request.getLevelId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Level not found"));
+            lesson.setLevel(level);
+        }
 
         Lesson updated = lessonRepository.save(lesson);
         return toResponse(updated);
@@ -81,6 +96,10 @@ public class AdminLessonController {
         response.setTitle(lesson.getTitle());
         response.setDescription(lesson.getDescription());
         response.setLessonOrder(lesson.getLessonOrder());
+        if (lesson.getLevel() != null) {
+            response.setLevelId(lesson.getLevel().getId());
+            response.setLevelCode(lesson.getLevel().getCode());
+        }
         return response;
     }
 }

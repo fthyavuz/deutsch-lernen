@@ -5,38 +5,63 @@
     </header>
 
     @if (loading()) {
-    <div class="loading">Loading lessons...</div>
+    <div class="loading">Loading your path...</div>
     } @else {
-    <div class="lesson-grid">
-        @for (lesson of lessons(); track lesson.id) {
-        <div class="lesson-card" [class.completed]="lesson.progress?.completed">
-            <div class="card-content">
-                <h2>{{ lesson.title }}</h2>
-                <p>{{ lesson.description }}</p>
+    <div class="levels-container">
+        @for (level of levels(); track level.id) {
+        <section class="level-section">
+            <div class="level-header">
+                <div class="level-info">
+                    <div class="level-badge">{{ level.code }}</div>
+                    <div class="level-text">
+                        <h2>{{ level.title }}</h2>
+                        <p>{{ level.description }}</p>
+                    </div>
+                </div>
+                <div class="level-stats">
+                    <span class="progress-text">{{ level.completedCount }}/{{ level.totalCount }} Lessons</span>
+                    <div class="progress-mini-bar">
+                        <div class="progress-fill"
+                            [style.width.%]="(level.completedCount / (level.totalCount || 1)) * 100"></div>
+                    </div>
+                </div>
+            </div>
 
-                @if (lesson.progress) {
-                <div class="progress-info">
-                    <span class="badge" [class.success]="lesson.progress?.completed">
-                        {{ lesson.progress?.completed ? 'Completed' : 'In Progress' }}
-                    </span>
-                    @if (lesson.progress?.score !== undefined) {
-                    <span class="score">Score: {{ lesson.progress?.score }}%</span>
-                    }
+            <div class="lesson-grid">
+                @for (lesson of level.lessons; track lesson.id) {
+                <div class="lesson-card" [class.completed]="lesson.progress?.completed">
+                    <div class="card-content">
+                        <h2>{{ lesson.title }}</h2>
+                        <p>{{ lesson.description }}</p>
+
+                        @if (lesson.progress) {
+                        <div class="progress-info">
+                            <span class="badge" [class.success]="lesson.progress.completed">
+                                {{ lesson.progress.completed ? 'Completed' : 'In Progress' }}
+                            </span>
+                            @if (lesson.progress.score !== undefined) {
+                            <span class="score">Score: {{ lesson.progress.score }}%</span>
+                            }
+                        </div>
+                        } @else {
+                        <div class="progress-info">
+                            <span class="badge new">Not Started</span>
+                        </div>
+                        }
+                    </div>
+                    <div class="card-actions">
+                        <button (click)="startLesson(lesson.id)">
+                            {{ lesson.progress ? 'Review' : 'Start Lesson' }}
+                        </button>
+                    </div>
                 </div>
-                } @else {
-                <div class="progress-info">
-                    <span class="badge new">Not Started</span>
-                </div>
+                } @empty {
+                <p class="empty-msg">No lessons available in this level yet.</p>
                 }
             </div>
-            <div class="card-actions">
-                <button (click)="startLesson(lesson.id)">
-                    {{ lesson.progress ? 'Review' : 'Start Lesson' }}
-                </button>
-            </div>
-        </div>
+        </section>
         } @empty {
-        <p>No lessons available yet.</p>
+        <p>No levels available yet.</p>
         }
     </div>
     }

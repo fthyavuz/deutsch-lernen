@@ -8,5 +8,6 @@ export interface LessonDTO {
     lessonOrder?: number;
     vocabularies?: VocabularyDTO[];
     quizQuestions?: QuizQuestionDTO[];
-
+    levelId?: number;
+    levelCode?: string;
 }

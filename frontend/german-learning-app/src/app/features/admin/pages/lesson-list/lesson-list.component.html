@@ -20,6 +20,7 @@
                 <thead>
                     <tr>
                         <th style="width: 100px;">Order</th>
+                        <th>Level</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th class="text-right">Actions</th>
@@ -29,6 +30,10 @@
                     <tr *ngFor="let lesson of lessons()">
                         <td>
                             <span class="lesson-order-badge">{{ lesson.lessonOrder }}</span>
+                        </td>
+                        <td>
+                            <span class="badge" [class.success]="lesson.levelCode">{{ lesson.levelCode || 'N/A'
+                                }}</span>
                         </td>
                         <td class="lesson-title-cell">{{ lesson.title }}</td>
                         <td class="lesson-desc-cell" [title]="lesson.description">{{ lesson.description }}</td>

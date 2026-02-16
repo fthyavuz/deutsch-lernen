@@ -1,0 +1,6 @@
+/* Level List Styles */
+.loading-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}

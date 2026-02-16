@@ -1,0 +1,47 @@
+<div class="admin-container">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Level Management</h1>
+            <p>Define and organize language levels (A1, B1, etc.)</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-primary" (click)="create()">
+                <span>+</span> New Level
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        @if (loading()) {
+        <div class="loading-state">Loading levels...</div>
+        } @else {
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Order</th>
+                        <th style="width: 120px;">Code</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (level of levels(); track level.id) {
+                    <tr>
+                        <td><span class="lesson-order-badge">{{ level.displayOrder }}</span></td>
+                        <td><span class="badge success">{{ level.code }}</span></td>
+                        <td><strong>{{ level.title }}</strong></td>
+                        <td class="lesson-desc-cell">{{ level.description }}</td>
+                        <td class="text-right">
+                            <button class="btn-icon" (click)="edit(level.id)" title="Edit">✏️</button>
+                            <button class="btn-icon btn-danger" (click)="remove(level.id)" title="Delete">🗑️</button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+    </div>
+</div>

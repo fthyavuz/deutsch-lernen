@@ -17,6 +17,7 @@ public class AdminImportService {
     private final VocabularyRepository vocabularyRepository;
     private final ExampleSentenceRepository exampleSentenceRepository;
     private final QuizQuestionRepository quizQuestionRepository;
+    private final LevelRepository levelRepository;
 
     @Transactional
     public Lesson importLesson(LessonImportDTO importDTO) {
@@ -30,6 +31,14 @@ public class AdminImportService {
         lesson.setTitle(importDTO.getTitle());
         lesson.setDescription(importDTO.getDescription());
         lesson.setLessonOrder(importDTO.getLessonOrder());
+
+        // Handle Level
+        if (importDTO.getLevelCode() != null) {
+            Level level = levelRepository.findByCode(importDTO.getLevelCode())
+                    .orElseThrow(() -> new com.fatih.germanapp.exception.ResourceNotFoundException(
+                            "Level not found: " + importDTO.getLevelCode()));
+            lesson.setLevel(level);
+        }
 
         // If updating existing, clear old associations
         if (lesson.getId() != null) {

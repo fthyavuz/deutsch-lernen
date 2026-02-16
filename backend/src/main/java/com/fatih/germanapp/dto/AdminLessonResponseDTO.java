@@ -10,4 +10,6 @@ public class AdminLessonResponseDTO {
     private String title;
     private String description;
     private int lessonOrder;
+    private Long levelId;
+    private String levelCode;
 }
