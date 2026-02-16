@@ -18,6 +18,11 @@ public class DataInitializer implements CommandLineRunner {
     @Value("${app.admin.password:admin123}")
     private String adminPassword;
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final com.fatih.germanapp.repository.LevelRepository levelRepository;
+    private final com.fatih.germanapp.repository.LessonRepository lessonRepository;
+
     public DataInitializer(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             com.fatih.germanapp.repository.LevelRepository levelRepository,
