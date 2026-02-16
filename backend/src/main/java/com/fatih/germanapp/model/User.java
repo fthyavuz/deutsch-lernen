@@ -41,4 +41,6 @@ public class User {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @jakarta.persistence.OneToMany(mappedBy = "user", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<UserProgress> progressEntries = new java.util.ArrayList<>();
 }

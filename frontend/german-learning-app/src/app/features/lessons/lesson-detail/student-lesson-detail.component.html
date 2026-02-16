@@ -1,33 +1,48 @@
-<div class="lesson-container">
-    <div class="header">
-        <button class="back-btn" (click)="goBack()">← Back</button>
-        <div class="progress">
+<div class="lesson-view">
+    <div class="header-overlay">
+        <button class="back-btn" (click)="goBack()">←</button>
+        <div class="progress-pill">
             {{ currentIndex() + 1 }} / {{ vocabularies().length }}
         </div>
     </div>
 
     @if (loading()) {
-    <div class="loading">Loading words...</div>
+    <div class="full-center">
+        <div class="spinner"></div>
+        <p>Preparing words...</p>
+    </div>
     } @else if (vocabularies().length === 0) {
-    <div class="empty">No words in this lesson yet.</div>
-    } @else if (finished()) {
-    <div class="finished-state">
-        <h2>Lesson Review Complete!</h2>
-        <p>You have reviewed all {{ vocabularies().length }} words.</p>
-        <div class="actions">
-            <button (click)="restart()">Review Again</button>
-            <button (click)="startQuiz()" class="primary">Take Quiz</button>
-        </div>
+    <div class="full-center">
+        <p>No words in this lesson yet.</p>
     </div>
     } @else {
-    <div class="flashcard-wrapper">
-        <app-flashcard [vocabulary]="currentVocabulary()!" title="Click to flip, then click Next below or swipe">
-        </app-flashcard>
+    <div class="shorts-container" (scroll)="onScroll($event)">
+        @for (vocabulary of vocabularies(); track vocabulary.id; let i = $index) {
+        <div class="snap-section" [id]="'card-' + i">
+            <app-flashcard [vocabulary]="vocabulary" [isActive]="currentIndex() === i"></app-flashcard>
+        </div>
+        }
 
-        <div class="controls">
-            <button (click)="prev()" [disabled]="currentIndex() === 0">Previous</button>
-            <button (click)="next()" class="primary">Next Word</button>
+        <!-- Finished State at the end of scroll -->
+        <div class="snap-section finished-slide">
+            <div class="finished-card">
+                <div class="icon">🏆</div>
+                <h2>Lesson Complete!</h2>
+                <p>You've reviewed all {{ vocabularies().length }} words.</p>
+                <div class="slide-actions">
+                    <button (click)="restart()" class="btn-refresh">Review Again</button>
+                    <button (click)="startQuiz()" class="btn-primary">Take Quiz</button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Navigation Tooltip for desktop/buttons -->
+    @if (!finished()) {
+    <div class="side-nav">
+        <button class="nav-arrow up" (click)="prev()" [disabled]="currentIndex() === 0">↑</button>
+        <button class="nav-arrow down" (click)="next()">↓</button>
+    </div>
+    }
     }
 </div>

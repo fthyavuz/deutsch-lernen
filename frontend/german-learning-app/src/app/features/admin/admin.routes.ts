@@ -26,6 +26,10 @@ export const adminRoutes: Routes = [
             {
                 path: 'levels/edit/:id',
                 loadComponent: () => import('./pages/level-form/level-form.component').then(m => m.LevelFormComponent)
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./pages/user-list/user-list.component').then(m => m.UserListComponent)
             }
         ]
     }

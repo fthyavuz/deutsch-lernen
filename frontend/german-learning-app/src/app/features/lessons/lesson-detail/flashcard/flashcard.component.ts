@@ -11,14 +11,18 @@ import { VocabularyDTO } from '../../../../shared/models/vocabulary.model';
 })
 export class FlashcardComponent {
     vocabulary = input.required<VocabularyDTO>();
+    isActive = input<boolean>(false);
 
     constructor() {
-        // Reset card state when vocabulary changes
+        // Reset card state when vocabulary changes OR when card becomes inactive
         effect(() => {
             this.vocabulary();
-            this.isFlipped = false;
-            this.showingEnglish = false;
-            this.showingTurkish = false;
+            // Reset if card is no longer active
+            if (!this.isActive()) {
+                this.isFlipped = false;
+                this.showingEnglish = false;
+                this.showingTurkish = false;
+            }
         });
     }
 

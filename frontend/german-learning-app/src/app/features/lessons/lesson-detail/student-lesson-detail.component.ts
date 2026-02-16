@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VocabularyService } from '../../../shared/services/vocabulary.service';
@@ -22,10 +22,7 @@ export class StudentLessonDetailComponent implements OnInit {
   loading = signal(true);
   finished = signal(false);
 
-  // Computed would be better but simple getter for now
-  get currentVocabulary() {
-    return () => this.vocabularies()[this.currentIndex()];
-  }
+  currentVocabulary = computed(() => this.vocabularies()[this.currentIndex()]);
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -54,6 +51,7 @@ export class StudentLessonDetailComponent implements OnInit {
   next() {
     if (this.currentIndex() < this.vocabularies().length - 1) {
       this.currentIndex.update(i => i + 1);
+      this.scrollToCard(this.currentIndex());
     } else {
       this.finished.set(true);
     }
@@ -62,6 +60,33 @@ export class StudentLessonDetailComponent implements OnInit {
   prev() {
     if (this.currentIndex() > 0) {
       this.currentIndex.update(i => i - 1);
+      this.scrollToCard(this.currentIndex());
+      this.finished.set(false);
+    }
+  }
+
+  scrollToCard(index: number) {
+    const el = document.getElementById(`card-${index}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  onScroll(event: Event) {
+    const container = event.target as HTMLElement;
+    const scrollTop = container.scrollTop;
+    const height = container.clientHeight;
+
+    // Calculate which card is most visible
+    const newIndex = Math.round(scrollTop / height);
+    if (newIndex !== this.currentIndex() && newIndex < this.vocabularies().length) {
+      this.currentIndex.set(newIndex);
+    }
+
+    // Detect end of scroll
+    if (scrollTop + height >= container.scrollHeight - 10) {
+      this.finished.set(true);
+    } else {
       this.finished.set(false);
     }
   }
@@ -69,6 +94,7 @@ export class StudentLessonDetailComponent implements OnInit {
   restart() {
     this.currentIndex.set(0);
     this.finished.set(false);
+    this.scrollToCard(0);
   }
 
   startQuiz() {
