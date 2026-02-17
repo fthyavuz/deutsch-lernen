@@ -11,9 +11,24 @@
 
     <div class="card form-card">
         <div class="import-instructions">
-            <h3>How to use:</h3>
-            <p>Paste your JSON data below. This will automatically create the lesson and all its associated data in one
-                go.</p>
+            <div class="instructions-header">
+                <h3>AI Import Helper</h3>
+                <button class="btn-outline-primary btn-sm" (click)="copyPromptTemplate()">
+                    {{ copied() ? '✓ Copied!' : '📋 Copy Prompt Template' }}
+                </button>
+            </div>
+            <p>Use the template above with AI to generate a complete lesson. It will automatically create:</p>
+            <ul class="import-stats-preview">
+                <li><strong>Vocabulary:</strong> 1 high-quality example sentence per word.</li>
+                <li><strong>Multiple Choice:</strong> 1 situational situational question per word.</li>
+                <li><strong>Matching:</strong> 1 question for every 5 words.</li>
+                <li><strong>Verb Training:</strong> 5 conjugation exercises at the end.</li>
+                <li><strong>Language:</strong> All questions must be in German. Only the Matching question's options
+                    can be in English.</li>
+                <li><strong>Articles:</strong> All Nouns must have their articles (der, die, das).</li>
+                <li><strong>Randomized:</strong> Questions will not follow vocabulary order.</li>
+                <li><strong>Balanced Answer:</strong> Correct options (A, B, C, D) are distributed evenly.</li>
+            </ul>
         </div>
 
         <div class="form-group">

@@ -99,7 +99,12 @@ public class AdminImportService {
                 question.setOptionC(quizDTO.getOptionC());
                 question.setOptionD(quizDTO.getOptionD());
                 question.setMatchingPairs(quizDTO.getMatchingPairs());
-                question.setCorrectAnswer(quizDTO.getCorrectAnswer());
+                String correctAnswer = quizDTO.getCorrectAnswer();
+                if (quizDTO.getType() == QuizQuestionType.MATCHING
+                        && (correctAnswer == null || correctAnswer.isEmpty())) {
+                    correctAnswer = quizDTO.getMatchingPairs();
+                }
+                question.setCorrectAnswer(correctAnswer);
                 question.setLesson(lesson);
                 quizQuestionRepository.save(question);
             }

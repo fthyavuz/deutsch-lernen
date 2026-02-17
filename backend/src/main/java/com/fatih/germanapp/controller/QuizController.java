@@ -48,15 +48,22 @@ public class QuizController {
                 .orElseThrow(() -> new RuntimeException("Quiz question not found"));
         QuizSubmitResponseDTO response = new QuizSubmitResponseDTO();
         response.setQuestionId(request.getQuestionId());
-        response.setCorrectAnswer(quizQuestion.getCorrectAnswer());
 
-        // For MATCHING type, compare pairs as sets (order-independent)
+        // For MATCHING type, the correct answer is the matchingPairs field if
+        // correctAnswer is empty
+        String actualCorrectAnswer = quizQuestion.getCorrectAnswer();
+        if (quizQuestion.getType().toString().equals("MATCHING")
+                && (actualCorrectAnswer == null || actualCorrectAnswer.isEmpty())) {
+            actualCorrectAnswer = quizQuestion.getMatchingPairs();
+        }
+
+        response.setCorrectAnswer(actualCorrectAnswer);
+
         boolean isCorrect;
         if ("MATCHING".equals(quizQuestion.getType().toString())) {
-            isCorrect = validateMatchingAnswer(request.getSelectedAnswer(), quizQuestion.getCorrectAnswer());
+            isCorrect = validateMatchingAnswer(request.getSelectedAnswer(), actualCorrectAnswer);
         } else {
-            // For other types, simple string comparison
-            isCorrect = request.getSelectedAnswer().equals(quizQuestion.getCorrectAnswer());
+            isCorrect = request.getSelectedAnswer().equals(actualCorrectAnswer);
         }
 
         response.setCorrect(isCorrect);
@@ -68,14 +75,26 @@ public class QuizController {
             return false;
         }
 
-        // Parse both answers into sets of pairs
-        java.util.Set<String> selectedPairs = new java.util.HashSet<>(
-                java.util.Arrays.asList(selectedAnswer.split("\\|")));
-        java.util.Set<String> correctPairs = new java.util.HashSet<>(
-                java.util.Arrays.asList(correctAnswer.split("\\|")));
+        // Parse and normalize selected answer
+        java.util.Set<String> selectedPairs = java.util.Arrays.stream(selectedAnswer.split("\\|"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty() && s.contains(":"))
+                .map(s -> {
+                    String[] parts = s.split(":");
+                    return parts[0].trim() + ":" + parts[1].trim();
+                })
+                .collect(java.util.stream.Collectors.toSet());
 
-        // Compare sets (order doesn't matter)
+        // Parse and normalize correct answer
+        java.util.Set<String> correctPairs = java.util.Arrays.stream(correctAnswer.split("\\|"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty() && s.contains(":"))
+                .map(s -> {
+                    String[] parts = s.split(":");
+                    return parts[0].trim() + ":" + parts[1].trim();
+                })
+                .collect(java.util.stream.Collectors.toSet());
+
         return selectedPairs.equals(correctPairs);
     }
-
 }

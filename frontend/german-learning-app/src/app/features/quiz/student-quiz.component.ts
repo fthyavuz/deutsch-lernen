@@ -29,7 +29,8 @@ export class StudentQuizComponent implements OnInit {
     userInput = signal(''); // For fill-in-the-blank
     isAnswerSubmitted = signal(false);
     isCorrect = signal(false);
-    correctAnswer = signal<string | null>(null);
+    correctAnswer = signal<string | null>(null); // Stores the option key (optionA, etc.)
+    backendCorrectAnswer = signal<string | null>(null); // Stores the raw text from backend
 
     // Results
     score = signal(0);
@@ -85,10 +86,13 @@ export class StudentQuizComponent implements OnInit {
         if (!question.matchingPairs) return;
 
         // Parse "Hund:Dog|Katze:Cat|Haus:House"
-        const pairs = question.matchingPairs.split('|').map(pair => {
-            const [german, translation] = pair.split(':');
-            return { german, translation };
-        });
+        const pairs = question.matchingPairs.split('|')
+            .map(p => p.trim())
+            .filter(p => p.includes(':'))
+            .map(pair => {
+                const [german, translation] = pair.split(':').map(s => s.trim());
+                return { german, translation };
+            });
 
         this.matchingItems.set(pairs);
 
@@ -186,6 +190,7 @@ export class StudentQuizComponent implements OnInit {
         this.quizService.submitAnswer(request).subscribe({
             next: (res) => {
                 this.isCorrect.set(res.correct);
+                this.backendCorrectAnswer.set(res.correctAnswer);
 
                 // Map the backend's answer text back to the option key (optionA, optionB, etc)
                 // so we can highlight the correct button
@@ -240,6 +245,7 @@ export class StudentQuizComponent implements OnInit {
         this.isAnswerSubmitted.set(false);
         this.isCorrect.set(false);
         this.correctAnswer.set(null);
+        this.backendCorrectAnswer.set(null);
 
         // Reset matching state
         this.selectedGerman.set(null);
