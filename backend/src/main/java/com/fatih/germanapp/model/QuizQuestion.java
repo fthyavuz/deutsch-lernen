@@ -1,6 +1,5 @@
 package com.fatih.germanapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fatih.germanapp.dto.QuizQuestionType;
 
 import jakarta.persistence.Entity;

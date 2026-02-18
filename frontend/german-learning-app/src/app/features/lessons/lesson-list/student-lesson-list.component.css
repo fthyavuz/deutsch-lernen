@@ -4,9 +4,63 @@
     padding: 3rem 1.5rem;
 }
 
+/* Page Header Layout */
 .page-header {
     margin-bottom: 3.5rem;
+    position: relative;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+    /* Ensure space */
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s;
+    font-size: 1rem;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.back-link:hover {
+    transform: translateY(-50%) translateX(-5px);
+    color: var(--primary-hover);
+}
+
+/* On mobile, stack them */
+@media (max-width: 768px) {
+    .page-header {
+        display: block;
+        /* Standard flow */
+    }
+
+    .back-link {
+        position: static;
+        /* In flow */
+        transform: none;
+        margin-bottom: 1rem;
+    }
+
+    .back-link:hover {
+        transform: translateX(-5px);
+    }
+}
+
+.icon {
+    font-size: 1.2rem;
 }
 
 .page-header h1 {
@@ -21,7 +75,6 @@
     color: var(--text-muted);
     font-size: 1.15rem;
     max-width: 600px;
-    margin: 0 auto;
 }
 
 .lesson-grid {
@@ -64,6 +117,7 @@
     font-size: 1.75rem;
     color: var(--text-main);
     margin-bottom: 0.25rem;
+    line-height: 1.2;
 }
 
 .level-text p {
@@ -130,6 +184,17 @@
     .lesson-grid {
         grid-template-columns: 1fr;
         gap: 1.25rem;
+    }
+
+    .level-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .level-stats {
+        width: 100%;
+        text-align: left;
     }
 }
 
@@ -215,7 +280,7 @@
     border-top: 1px solid var(--border);
 }
 
-button {
+.card-actions button {
     width: 100%;
     padding: 0.9rem;
     background-color: var(--primary);
@@ -229,7 +294,7 @@ button {
     box-shadow: var(--shadow-sm);
 }
 
-button:hover {
+.card-actions button:hover {
     background-color: var(--primary-hover);
     box-shadow: var(--shadow-md);
 }

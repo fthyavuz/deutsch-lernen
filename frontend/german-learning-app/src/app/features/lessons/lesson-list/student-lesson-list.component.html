@@ -1,34 +1,41 @@
 <div class="container">
     <header class="page-header">
+        <button class="back-link" (click)="goBack()">
+            <span class="icon">←</span> Back to Levels
+        </button>
+        @if (level()) {
+        <h1>{{ level()?.title }} Lessons</h1>
+        <p>{{ level()?.description }}</p>
+        } @else {
         <h1>My Learning Path</h1>
         <p>Track your progress and continue learning German.</p>
+        }
     </header>
 
     @if (loading()) {
-    <div class="loading">Loading your path...</div>
+    <div class="loading">Loading lessons...</div>
     } @else {
     <div class="levels-container">
-        @for (level of levels(); track level.id) {
+        @if (level()) {
         <section class="level-section">
             <div class="level-header">
                 <div class="level-info">
-                    <div class="level-badge">{{ level.code }}</div>
+                    <div class="level-badge">{{ level()?.code }}</div>
                     <div class="level-text">
-                        <h2>{{ level.title }}</h2>
-                        <p>{{ level.description }}</p>
+                        <h2>{{ level()?.title }} Overview</h2>
+                        <p>{{ level()?.completedCount }}/{{ level()?.totalCount }} Lessons Completed</p>
                     </div>
                 </div>
                 <div class="level-stats">
-                    <span class="progress-text">{{ level.completedCount }}/{{ level.totalCount }} Lessons</span>
                     <div class="progress-mini-bar">
                         <div class="progress-fill"
-                            [style.width.%]="(level.completedCount / (level.totalCount || 1)) * 100"></div>
+                            [style.width.%]="(level()!.completedCount / (level()!.totalCount || 1)) * 100"></div>
                     </div>
                 </div>
             </div>
 
             <div class="lesson-grid">
-                @for (lesson of level.lessons; track lesson.id) {
+                @for (lesson of level()?.lessons; track lesson.id) {
                 <div class="lesson-card" [class.completed]="lesson.progress?.completed">
                     <div class="card-content">
                         <h2>{{ lesson.title }}</h2>
@@ -60,8 +67,8 @@
                 }
             </div>
         </section>
-        } @empty {
-        <p>No levels available yet.</p>
+        } @else {
+        <p>No level selected or level not found.</p>
         }
     </div>
     }

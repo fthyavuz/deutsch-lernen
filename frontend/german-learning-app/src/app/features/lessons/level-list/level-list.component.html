@@ -1,0 +1,28 @@
+<div class="container">
+    <header class="page-header">
+        <h1>German Learning Levels</h1>
+        <p>Choose a level to start your journey.</p>
+    </header>
+
+    @if (loading()) {
+    <div class="loading">Loading levels...</div>
+    } @else {
+    <div class="level-grid">
+        @for (level of levels(); track level.id) {
+        <div class="level-card" (click)="selectLevel(level.id)">
+            <div class="level-badge">{{ level.code }}</div>
+            <div class="card-content">
+                <h2>{{ level.title }}</h2>
+                <p>{{ level.description }}</p>
+                <div class="level-footer">
+                    <span class="lesson-count">{{ level.lessons?.length || 0 }} Lessons</span>
+                    <button class="btn-primary">View Lessons</button>
+                </div>
+            </div>
+        </div>
+        } @empty {
+        <p>No levels available yet.</p>
+        }
+    </div>
+    }
+</div>

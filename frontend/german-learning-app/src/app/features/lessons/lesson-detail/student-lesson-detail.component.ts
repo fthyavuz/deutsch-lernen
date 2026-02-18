@@ -103,6 +103,11 @@ export class StudentLessonDetailComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/']);
+    const levelId = this.route.snapshot.queryParamMap.get('levelId');
+    if (levelId) {
+      this.router.navigate(['/lessons/level', levelId]);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 }

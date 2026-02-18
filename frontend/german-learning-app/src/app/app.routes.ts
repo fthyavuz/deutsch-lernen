@@ -19,6 +19,20 @@ export const routes: Routes = [
         path: '',
         canActivate: [authGuard],
         loadComponent: () =>
+            import('./features/lessons/level-list/level-list.component')
+                .then(m => m.LevelListComponent)
+    },
+    {
+        path: 'lessons',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/lessons/level-list/level-list.component')
+                .then(m => m.LevelListComponent)
+    },
+    {
+        path: 'lessons/level/:levelId',
+        canActivate: [authGuard],
+        loadComponent: () =>
             import('./features/lessons/lesson-list/student-lesson-list.component')
                 .then(m => m.StudentLessonListComponent)
     },
