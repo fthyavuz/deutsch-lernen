@@ -3,7 +3,7 @@
 A full-stack web application designed to help users learn German through interactive lessons, flashcards, and quizzes. The app features an AI-powered import system to quickly generate high-quality educational content.
 
 ## 🚀 Public Address
-The application is reachable at: **[http://your-vps-ip-or-domain.com](http://your-vps-ip-or-domain.com)**
+The application is reachable at: **[https://german.fthyavuz.com/](https://german.fthyavuz.com/)**
 
 ## ✨ Features
 
