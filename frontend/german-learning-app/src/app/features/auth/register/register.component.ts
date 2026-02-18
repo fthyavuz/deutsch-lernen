@@ -44,7 +44,11 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('Registration error:', err);
-        this.error.set(err.error?.message || 'Registration failed. This email might already be in use.');
+        if (err.status === 0) {
+          this.error.set('Server is not responding. Please check your internet connection or try again later.');
+        } else {
+          this.error.set(err.error?.message || 'Registration failed. This email might already be in use.');
+        }
       }
     });
   }

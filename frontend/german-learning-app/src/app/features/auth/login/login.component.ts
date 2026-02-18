@@ -35,7 +35,13 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Login error:', err);
-        this.error.set('Invalid email or password.');
+        if (err.status === 0) {
+          this.error.set('Server is not responding. Please check your internet connection or try again later.');
+        } else if (err.status === 401 || err.status === 403) {
+          this.error.set('Invalid email or password.');
+        } else {
+          this.error.set(err.error?.message || 'An unexpected error occurred. Please try again.');
+        }
       }
     });
   }
