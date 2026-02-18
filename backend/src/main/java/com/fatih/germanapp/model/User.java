@@ -42,5 +42,6 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @jakarta.persistence.OneToMany(mappedBy = "user", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("user")
     private java.util.List<UserProgress> progressEntries = new java.util.ArrayList<>();
 }

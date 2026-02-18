@@ -33,12 +33,18 @@ public class AdminLevelController {
 
     @PostMapping
     public LevelResponseDTO createLevel(@RequestBody Level levelRequest) {
-        log.info("Creating new level: {}", levelRequest.getCode());
-        Level level = new Level();
-        level.setCode(levelRequest.getCode());
+        String trimmedCode = levelRequest.getCode() != null ? levelRequest.getCode().trim() : "";
+        log.info("Creating or updating level: {}", trimmedCode);
+
+        // Check if level with same code already exists (case-insensitive and trimmed)
+        Level level = levelRepository.findByCodeIgnoreCase(trimmedCode)
+                .orElse(new Level());
+
+        level.setCode(trimmedCode);
         level.setTitle(levelRequest.getTitle());
         level.setDescription(levelRequest.getDescription());
         level.setDisplayOrder(levelRequest.getDisplayOrder());
+
         return convertToDTO(levelRepository.save(level));
     }
 

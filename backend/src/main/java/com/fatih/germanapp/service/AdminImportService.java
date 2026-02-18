@@ -21,14 +21,15 @@ public class AdminImportService {
 
     @Transactional
     public Lesson importLesson(LessonImportDTO importDTO) {
-        log.info("Starting bulk import for lesson: {}", importDTO.getTitle());
+        String trimmedTitle = importDTO.getTitle() != null ? importDTO.getTitle().trim() : "";
+        log.info("Starting bulk import for lesson: {}", trimmedTitle);
 
-        // 1. Check if lesson exists by title
-        Lesson lesson = lessonRepository.findByTitle(importDTO.getTitle())
+        // 1. Check if lesson exists by title (case-insensitive and trimmed)
+        Lesson lesson = lessonRepository.findByTitleIgnoreCase(trimmedTitle)
                 .orElse(new Lesson());
 
         // Update fields
-        lesson.setTitle(importDTO.getTitle());
+        lesson.setTitle(trimmedTitle);
         lesson.setDescription(importDTO.getDescription());
         lesson.setLessonOrder(importDTO.getLessonOrder());
 

@@ -38,7 +38,7 @@ public class Vocabulary {
     private String relatedWords; // Bus, Zug
     @ManyToOne
     @JoinColumn(name = "lesson_id")
-    @JsonIgnoreProperties({ "vocabularies", "quizQuestions" })
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Lesson lesson;
 
     @OneToMany(mappedBy = "vocabulary", cascade = CascadeType.ALL, orphanRemoval = true)

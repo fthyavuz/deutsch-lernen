@@ -36,8 +36,12 @@ public class AdminLessonController {
     public AdminLessonResponseDTO createLesson(
             @RequestBody AdminLessonRequestDTO request) {
 
-        Lesson lesson = new Lesson();
-        lesson.setTitle(request.getTitle());
+        // Check if lesson with same title already exists (trimmed and case-insensitive)
+        String trimmedTitle = request.getTitle() != null ? request.getTitle().trim() : "";
+        Lesson lesson = lessonRepository.findByTitleIgnoreCase(trimmedTitle)
+                .orElse(new Lesson());
+
+        lesson.setTitle(trimmedTitle);
         lesson.setDescription(request.getDescription());
         lesson.setLessonOrder(request.getLessonOrder());
 

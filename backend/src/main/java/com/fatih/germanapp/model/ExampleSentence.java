@@ -32,7 +32,7 @@ public class ExampleSentence {
 
     @ManyToOne
     @JoinColumn(name = "vocabulary_id")
-    @JsonIgnoreProperties("exampleSentences")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Vocabulary vocabulary;
 
 }

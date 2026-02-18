@@ -45,7 +45,7 @@ public class QuizQuestion {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")
-    @JsonIgnoreProperties({ "vocabularies", "quizQuestions" })
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Lesson lesson;
 
 }

@@ -10,5 +10,7 @@ import com.fatih.germanapp.model.Level;
 public interface LevelRepository extends JpaRepository<Level, Long> {
     Optional<Level> findByCode(String code);
 
+    Optional<Level> findByCodeIgnoreCase(String code);
+
     List<Level> findAllByOrderByDisplayOrderAsc();
 }

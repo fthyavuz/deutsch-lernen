@@ -36,9 +36,11 @@ public class UserProgress {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("progressEntries")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({ "userProgressEntries", "vocabularies", "quizQuestions" })
     private Lesson lesson;
 }
