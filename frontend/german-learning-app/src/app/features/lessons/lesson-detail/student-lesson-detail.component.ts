@@ -5,6 +5,8 @@ import { VocabularyService } from '../../../shared/services/vocabulary.service';
 import { VocabularyDTO } from '../../../shared/models/vocabulary.model';
 import { FlashcardComponent } from './flashcard/flashcard.component';
 
+type Mode = 'flashcard' | 'writing' | 'writing-done';
+
 @Component({
   selector: 'app-student-lesson-detail',
   standalone: true,
@@ -22,7 +24,20 @@ export class StudentLessonDetailComponent implements OnInit {
   loading = signal(true);
   finished = signal(false);
 
+  // Writing practice state
+  mode = signal<Mode>('flashcard');
+  writingIndex = signal(0);
+  userInput = signal('');
+  submitted = signal(false);
+  isCorrect = signal<boolean | null>(null);
+  correctCount = signal(0);
+
   currentVocabulary = computed(() => this.vocabularies()[this.currentIndex()]);
+  writingWord = computed(() => this.vocabularies()[this.writingIndex()]);
+  writingScore = computed(() => {
+    const total = this.vocabularies().length;
+    return total > 0 ? Math.round((this.correctCount() / total) * 100) : 0;
+  });
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -108,6 +123,38 @@ export class StudentLessonDetailComponent implements OnInit {
       this.router.navigate(['/lessons/level', levelId]);
     } else {
       this.router.navigate(['/']);
+    }
+  }
+
+  // Writing practice
+  startWritingPractice() {
+    this.writingIndex.set(0);
+    this.userInput.set('');
+    this.submitted.set(false);
+    this.isCorrect.set(null);
+    this.correctCount.set(0);
+    this.mode.set('writing');
+  }
+
+  setUserInput(value: string) {
+    this.userInput.set(value);
+  }
+
+  submitAnswer() {
+    const correct = this.userInput() === this.writingWord().germanWord;
+    this.isCorrect.set(correct);
+    if (correct) this.correctCount.update(c => c + 1);
+    this.submitted.set(true);
+  }
+
+  nextWritingCard() {
+    if (this.writingIndex() < this.vocabularies().length - 1) {
+      this.writingIndex.update(i => i + 1);
+      this.userInput.set('');
+      this.submitted.set(false);
+      this.isCorrect.set(null);
+    } else {
+      this.mode.set('writing-done');
     }
   }
 }

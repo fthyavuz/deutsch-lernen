@@ -1,9 +1,11 @@
 <div class="lesson-view">
     <div class="header-overlay">
         <button class="back-btn" (click)="goBack()">←</button>
-        <div class="progress-pill">
-            {{ currentIndex() + 1 }} / {{ vocabularies().length }}
-        </div>
+        @if (mode() === 'flashcard') {
+        <div class="progress-pill">{{ currentIndex() + 1 }} / {{ vocabularies().length }}</div>
+        } @else if (mode() === 'writing') {
+        <div class="progress-pill">{{ writingIndex() + 1 }} / {{ vocabularies().length }}</div>
+        }
     </div>
 
     @if (loading()) {
@@ -15,7 +17,60 @@
     <div class="full-center">
         <p>No words in this lesson yet.</p>
     </div>
+    } @else if (mode() === 'writing') {
+    <!-- Writing Practice -->
+    <div class="writing-container">
+        <div class="writing-card">
+            <p class="writing-progress">Word {{ writingIndex() + 1 }} of {{ vocabularies().length }}</p>
+            <div class="explanation-section">
+                <span class="explanation-label">Explanation</span>
+                <p class="writing-explanation">{{ writingWord().germanExplanation }}</p>
+            </div>
+
+            @if (!submitted()) {
+            <input class="writing-input" type="text" [value]="userInput()"
+                (input)="setUserInput($any($event.target).value)"
+                (keyup.enter)="userInput().trim() && submitAnswer()"
+                placeholder="Type the German word with article..." />
+            <button class="btn-check" (click)="submitAnswer()" [disabled]="!userInput().trim()">
+                Check Answer
+            </button>
+            } @else {
+            <input class="writing-input" [class.input-correct]="isCorrect()" [class.input-wrong]="!isCorrect()"
+                type="text" [value]="userInput()" readonly />
+            @if (isCorrect()) {
+            <div class="feedback feedback-correct">Correct!</div>
+            } @else {
+            <div class="feedback feedback-wrong">
+                <span>The correct answer is:</span>
+                <strong class="correct-word">{{ writingWord().germanWord }}</strong>
+            </div>
+            }
+            <button class="btn-check" (click)="nextWritingCard()">
+                {{ writingIndex() < vocabularies().length - 1 ? 'Next Word →' : 'See Results' }}
+            </button>
+            }
+        </div>
+    </div>
+    } @else if (mode() === 'writing-done') {
+    <!-- Writing Results -->
+    <div class="writing-container">
+        <div class="writing-card result-card">
+            <div class="result-icon">✍️</div>
+            <h2>Practice Complete!</h2>
+            <div class="score-display">
+                <span class="score-number">{{ writingScore() }}</span>
+                <span class="score-label">out of 100</span>
+            </div>
+            <p class="result-subtitle">{{ correctCount() }} / {{ vocabularies().length }} words correct</p>
+            <div class="result-actions">
+                <button class="btn-check" (click)="startQuiz()">Take Quiz</button>
+                <button class="btn-retry" (click)="startWritingPractice()">Try Again</button>
+            </div>
+        </div>
+    </div>
     } @else {
+    <!-- Flashcard Mode -->
     <div class="shorts-container" (scroll)="onScroll($event)">
         @for (vocabulary of vocabularies(); track vocabulary.id; let i = $index) {
         <div class="snap-section" [id]="'card-' + i">
@@ -23,7 +78,6 @@
         </div>
         }
 
-        <!-- Finished State at the end of scroll -->
         <div class="snap-section finished-slide">
             <div class="finished-card">
                 <div class="icon">🏆</div>
@@ -31,13 +85,13 @@
                 <p>You've reviewed all {{ vocabularies().length }} words.</p>
                 <div class="slide-actions">
                     <button (click)="restart()" class="btn-refresh">Review Again</button>
+                    <button (click)="startWritingPractice()" class="btn-writing">✍️ Writing Practice</button>
                     <button (click)="startQuiz()" class="btn-primary">Take Quiz</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Tooltip for desktop/buttons -->
     @if (!finished()) {
     <div class="side-nav">
         <button class="nav-arrow up" (click)="prev()" [disabled]="currentIndex() === 0">↑</button>

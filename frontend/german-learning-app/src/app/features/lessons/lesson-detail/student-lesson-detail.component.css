@@ -206,6 +206,230 @@ app-flashcard {
     }
 }
 
+/* Writing Practice button on finished slide */
+.btn-writing {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-writing:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Writing Practice */
+.writing-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: linear-gradient(180deg, rgba(79, 70, 229, 0.08) 0%, #0f172a 100%);
+}
+
+.writing-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.4s ease-out;
+}
+
+.writing-progress {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.explanation-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.explanation-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+.writing-explanation {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #1e293b;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 1.25rem;
+    border-radius: 16px;
+    border-left: 4px solid #4f46e5;
+    margin: 0;
+}
+
+.writing-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1.1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    outline: none;
+    color: #1e293b;
+    box-sizing: border-box;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: inherit;
+}
+
+.writing-input:focus {
+    border-color: #4f46e5;
+}
+
+.writing-input.input-correct {
+    border-color: #10b981;
+    background: #f0fdf4;
+    color: #065f46;
+}
+
+.writing-input.input-wrong {
+    border-color: #ef4444;
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.btn-check {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-check:hover {
+    opacity: 0.9;
+}
+
+.btn-check:active {
+    transform: scale(0.98);
+}
+
+.btn-check:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.feedback {
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.feedback-correct {
+    background: #f0fdf4;
+    color: #059669;
+    border: 1px solid #bbf7d0;
+}
+
+.feedback-wrong {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.correct-word {
+    font-size: 1.2rem;
+    color: #1e293b;
+}
+
+/* Result card */
+.result-card {
+    text-align: center;
+    align-items: center;
+}
+
+.result-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.result-card h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.score-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.score-number {
+    font-size: 5rem;
+    font-weight: 900;
+    color: #4f46e5;
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.result-subtitle {
+    color: #64748b;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.btn-retry {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    padding: 0.875rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-retry:hover {
+    background: #e2e8f0;
+}
+
 @media (max-width: 640px) {
     .header-overlay {
         top: 1rem;
@@ -221,5 +445,9 @@ app-flashcard {
     app-flashcard {
         transform: scale(1);
         max-width: calc(100vw - 2rem);
+    }
+
+    .writing-card {
+        padding: 1.5rem;
     }
 }
