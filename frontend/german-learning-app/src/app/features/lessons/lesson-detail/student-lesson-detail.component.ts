@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VocabularyService } from '../../../shared/services/vocabulary.service';
+import { ProgressService } from '../../../shared/services/progress.service';
 import { VocabularyDTO } from '../../../shared/models/vocabulary.model';
 import { FlashcardComponent } from './flashcard/flashcard.component';
 
@@ -18,6 +19,7 @@ export class StudentLessonDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private vocabularyService = inject(VocabularyService);
+  private progressService = inject(ProgressService);
 
   vocabularies = signal<VocabularyDTO[]>([]);
   currentIndex = signal(0);
@@ -154,6 +156,9 @@ export class StudentLessonDetailComponent implements OnInit {
       this.submitted.set(false);
       this.isCorrect.set(null);
     } else {
+      const lessonId = Number(this.route.snapshot.paramMap.get('id'));
+      const score = Math.round((this.correctCount() / this.vocabularies().length) * 100);
+      this.progressService.saveProgress({ lessonId, score }).subscribe();
       this.mode.set('writing-done');
     }
   }
