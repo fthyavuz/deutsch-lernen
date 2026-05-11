@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.net.http.HttpResponse;
 @Service
 public class GeminiService {
 
+    private static final Logger log = LoggerFactory.getLogger(GeminiService.class);
+
     @Value("${gemini.api.key:}")
     private String apiKey;
 
@@ -22,7 +26,7 @@ public class GeminiService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=";
 
     public String checkSentence(String word, String germanExplanation, String userSentence) {
         if (apiKey == null || apiKey.isBlank()) {
@@ -54,12 +58,28 @@ public class GeminiService {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            log.info("Gemini HTTP status: {}", response.statusCode());
+
             JsonNode root = objectMapper.readTree(response.body());
-            return root.path("candidates").get(0)
+
+            if (root.has("error")) {
+                String errorMsg = root.path("error").path("message").asText("unknown");
+                log.error("Gemini API error: {}", errorMsg);
+                return "AI feedback is temporarily unavailable. Please try again later.";
+            }
+
+            JsonNode candidates = root.path("candidates");
+            if (candidates.isMissingNode() || candidates.isEmpty()) {
+                log.error("Gemini response had no candidates. Body: {}", response.body());
+                return "AI feedback is temporarily unavailable. Please try again later.";
+            }
+
+            return candidates.get(0)
                     .path("content").path("parts").get(0)
                     .path("text").asText("Could not get feedback.");
 
         } catch (Exception e) {
+            log.error("Gemini call failed: {}", e.getMessage(), e);
             return "Sorry, I couldn't check your sentence right now. Please try again.";
         }
     }
