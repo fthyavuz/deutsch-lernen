@@ -131,6 +131,12 @@ export class StudentLessonDetailComponent implements OnInit {
     this.router.navigate([`/lessons/${lessonId}/grammar`], levelId ? { queryParams: { levelId } } : {});
   }
 
+  startAiSentences() {
+    const lessonId = this.route.snapshot.paramMap.get('id');
+    const levelId = this.route.snapshot.queryParamMap.get('levelId');
+    this.router.navigate([`/lessons/${lessonId}/ai-sentences`], levelId ? { queryParams: { levelId } } : {});
+  }
+
   goBack() {
     const levelId = this.route.snapshot.queryParamMap.get('levelId');
     if (levelId) {

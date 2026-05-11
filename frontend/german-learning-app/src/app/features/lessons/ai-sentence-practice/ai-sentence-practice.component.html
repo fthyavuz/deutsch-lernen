@@ -1,0 +1,80 @@
+<div class="ai-view">
+  <div class="header-overlay">
+    <button class="back-btn" (click)="goBack()">←</button>
+    @if (mode() === 'practice' || mode() === 'retry') {
+    <div class="progress-pill">{{ wordIndex() + 1 }} / {{ activeWords().length }}</div>
+    }
+  </div>
+
+  @if (loading()) {
+  <div class="full-center">
+    <div class="spinner"></div>
+    <p>Loading words...</p>
+  </div>
+
+  } @else if (activeWords().length === 0) {
+  <div class="full-center">
+    <p>No words in this lesson yet.</p>
+  </div>
+
+  } @else if (mode() === 'practice' || mode() === 'retry') {
+  <div class="practice-container">
+    <div class="practice-card">
+      <p class="round-label">
+        {{ mode() === 'retry' ? '🔁 Skipped Words' : '💬 AI Sentence Practice' }}
+      </p>
+
+      <div class="word-section">
+        <span class="word-label">Write a sentence using:</span>
+        <h2 class="featured-word">{{ currentWord()?.germanWord }}</h2>
+        <p class="word-explanation">{{ currentWord()?.germanExplanation }}</p>
+      </div>
+
+      @if (!submitted()) {
+      <textarea class="sentence-input" [value]="userSentence()"
+        (input)="setSentence($any($event.target).value)"
+        (keydown.control.enter)="userSentence().trim() && submitSentence()"
+        placeholder="Schreib einen Satz auf Deutsch..."
+        rows="3"
+        [disabled]="checking()"></textarea>
+      <div class="action-row">
+        <button class="btn-skip" (click)="skip()">Skip →</button>
+        <button class="btn-check" (click)="submitSentence()"
+          [disabled]="!userSentence().trim() || checking()">
+          @if (checking()) {
+          <span class="checking-dots">Checking<span>.</span><span>.</span><span>.</span></span>
+          } @else {
+          Check ✓
+          }
+        </button>
+      </div>
+
+      } @else {
+      <div class="your-sentence">
+        <span class="your-sentence-label">Your sentence</span>
+        <p>{{ userSentence() }}</p>
+      </div>
+      <div class="ai-feedback">
+        <span class="ai-label">🤖 AI Feedback</span>
+        <p>{{ feedback() }}</p>
+      </div>
+      <button class="btn-check" (click)="next()">
+        {{ wordIndex() < activeWords().length - 1 ? 'Next Word →' : 'Finish Round' }}
+      </button>
+      }
+    </div>
+  </div>
+
+  } @else if (mode() === 'summary') {
+  <div class="practice-container">
+    <div class="practice-card summary-card">
+      <div class="summary-icon">🎉</div>
+      <h2>Session Complete!</h2>
+      <p class="summary-sub">You practiced {{ totalPracticed() }} word{{ totalPracticed() !== 1 ? 's' : '' }}</p>
+      <div class="summary-actions">
+        <button class="btn-check" (click)="goBack()">Back to Lesson</button>
+      </div>
+    </div>
+  </div>
+  }
+</div>
