@@ -4,7 +4,7 @@
         @if (mode() === 'flashcard') {
         <div class="progress-pill">{{ currentIndex() + 1 }} / {{ vocabularies().length }}</div>
         } @else if (mode() === 'writing') {
-        <div class="progress-pill">{{ writingIndex() + 1 }} / {{ vocabularies().length }}</div>
+        <div class="progress-pill">{{ writingIndex() + 1 }} / {{ activeWritingWords().length }}</div>
         }
     </div>
 
@@ -21,7 +21,7 @@
     <!-- Writing Practice -->
     <div class="writing-container">
         <div class="writing-card">
-            <p class="writing-progress">Word {{ writingIndex() + 1 }} of {{ vocabularies().length }}</p>
+            <p class="writing-progress">Word {{ writingIndex() + 1 }} of {{ activeWritingWords().length }}</p>
             <div class="explanation-section">
                 <span class="explanation-label">Explanation</span>
                 <p class="writing-explanation">{{ writingWord().germanExplanation }}</p>
@@ -47,25 +47,43 @@
             </div>
             }
             <button class="btn-check" (click)="nextWritingCard()">
-                {{ writingIndex() < vocabularies().length - 1 ? 'Next Word →' : 'See Results' }}
+                {{ writingIndex() < activeWritingWords().length - 1 ? 'Next Word →' : 'See Results' }}
             </button>
             }
         </div>
     </div>
     } @else if (mode() === 'writing-done') {
-    <!-- Writing Results -->
+    <!-- Writing Results (with wrong answers remaining) -->
     <div class="writing-container">
         <div class="writing-card result-card">
             <div class="result-icon">✍️</div>
-            <h2>Practice Complete!</h2>
+            <h2>Round {{ attemptCount() }} Complete!</h2>
             <div class="score-display">
                 <span class="score-number">{{ writingScore() }}</span>
                 <span class="score-label">out of 100</span>
             </div>
-            <p class="result-subtitle">{{ correctCount() }} / {{ vocabularies().length }} words correct</p>
+            <p class="result-subtitle">{{ correctCount() }} / {{ activeWritingWords().length }} words correct</p>
+            <p class="retry-hint">{{ wrongWords().length }} word{{ wrongWords().length === 1 ? '' : 's' }} to practice</p>
+            <div class="result-actions">
+                <button class="btn-check" (click)="retryWrongAnswers()">Practice Wrong Answers ({{ wrongWords().length }})</button>
+                <button class="btn-retry" (click)="startWritingPractice()">Start Over</button>
+            </div>
+        </div>
+    </div>
+    } @else if (mode() === 'writing-summary') {
+    <!-- Writing Summary (all correct) -->
+    <div class="writing-container">
+        <div class="writing-card result-card">
+            <div class="result-icon">🎉</div>
+            <h2>All Words Mastered!</h2>
+            <div class="score-display">
+                <span class="score-number">{{ firstAttemptScore() }}</span>
+                <span class="score-label">first attempt score</span>
+            </div>
+            <p class="result-subtitle">Completed in {{ attemptCount() }} attempt{{ attemptCount() === 1 ? '' : 's' }}</p>
             <div class="result-actions">
                 <button class="btn-check" (click)="startQuiz()">Take Quiz</button>
-                <button class="btn-retry" (click)="startWritingPractice()">Try Again</button>
+                <button class="btn-retry" (click)="startWritingPractice()">Practice Again</button>
             </div>
         </div>
     </div>

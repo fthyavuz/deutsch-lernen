@@ -6,7 +6,7 @@ import { ProgressService } from '../../../shared/services/progress.service';
 import { VocabularyDTO } from '../../../shared/models/vocabulary.model';
 import { FlashcardComponent } from './flashcard/flashcard.component';
 
-type Mode = 'flashcard' | 'writing' | 'writing-done';
+type Mode = 'flashcard' | 'writing' | 'writing-done' | 'writing-summary';
 
 @Component({
   selector: 'app-student-lesson-detail',
@@ -34,10 +34,16 @@ export class StudentLessonDetailComponent implements OnInit {
   isCorrect = signal<boolean | null>(null);
   correctCount = signal(0);
 
+  // Retry state (session-only, not persisted)
+  activeWritingWords = signal<VocabularyDTO[]>([]);
+  wrongWords = signal<VocabularyDTO[]>([]);
+  attemptCount = signal(0);
+  firstAttemptScore = signal<number | null>(null);
+
   currentVocabulary = computed(() => this.vocabularies()[this.currentIndex()]);
-  writingWord = computed(() => this.vocabularies()[this.writingIndex()]);
+  writingWord = computed(() => this.activeWritingWords()[this.writingIndex()]);
   writingScore = computed(() => {
-    const total = this.vocabularies().length;
+    const total = this.activeWritingWords().length;
     return total > 0 ? Math.round((this.correctCount() / total) * 100) : 0;
   });
 
@@ -130,11 +136,15 @@ export class StudentLessonDetailComponent implements OnInit {
 
   // Writing practice
   startWritingPractice() {
+    this.activeWritingWords.set(this.vocabularies());
+    this.wrongWords.set([]);
     this.writingIndex.set(0);
     this.userInput.set('');
     this.submitted.set(false);
     this.isCorrect.set(null);
     this.correctCount.set(0);
+    this.attemptCount.set(0);
+    this.firstAttemptScore.set(null);
     this.mode.set('writing');
   }
 
@@ -143,23 +153,49 @@ export class StudentLessonDetailComponent implements OnInit {
   }
 
   submitAnswer() {
-    const correct = this.userInput() === this.writingWord().germanWord;
+    const word = this.writingWord();
+    const correct = this.userInput().trim() === word.germanWord;
     this.isCorrect.set(correct);
-    if (correct) this.correctCount.update(c => c + 1);
+    if (correct) {
+      this.correctCount.update(c => c + 1);
+    } else {
+      this.wrongWords.update(words => [...words, word]);
+    }
     this.submitted.set(true);
   }
 
   nextWritingCard() {
-    if (this.writingIndex() < this.vocabularies().length - 1) {
+    if (this.writingIndex() < this.activeWritingWords().length - 1) {
       this.writingIndex.update(i => i + 1);
       this.userInput.set('');
       this.submitted.set(false);
       this.isCorrect.set(null);
     } else {
-      const lessonId = Number(this.route.snapshot.paramMap.get('id'));
-      const score = Math.round((this.correctCount() / this.vocabularies().length) * 100);
-      this.progressService.saveProgress({ lessonId, score }).subscribe();
-      this.mode.set('writing-done');
+      this.attemptCount.update(c => c + 1);
+
+      if (this.firstAttemptScore() === null) {
+        const lessonId = Number(this.route.snapshot.paramMap.get('id'));
+        const score = this.writingScore();
+        this.progressService.saveProgress({ lessonId, score }).subscribe();
+        this.firstAttemptScore.set(score);
+      }
+
+      if (this.wrongWords().length === 0) {
+        this.mode.set('writing-summary');
+      } else {
+        this.mode.set('writing-done');
+      }
     }
+  }
+
+  retryWrongAnswers() {
+    this.activeWritingWords.set(this.wrongWords());
+    this.wrongWords.set([]);
+    this.writingIndex.set(0);
+    this.userInput.set('');
+    this.submitted.set(false);
+    this.isCorrect.set(null);
+    this.correctCount.set(0);
+    this.mode.set('writing');
   }
 }

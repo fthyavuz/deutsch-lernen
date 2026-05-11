@@ -408,6 +408,13 @@ app-flashcard {
     font-size: 1rem;
 }
 
+.retry-hint {
+    color: #f59e0b;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+}
+
 .result-actions {
     display: flex;
     flex-direction: column;
