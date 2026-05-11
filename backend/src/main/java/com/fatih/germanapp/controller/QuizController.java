@@ -63,11 +63,15 @@ public class QuizController {
         if ("MATCHING".equals(quizQuestion.getType().toString())) {
             isCorrect = validateMatchingAnswer(request.getSelectedAnswer(), actualCorrectAnswer);
         } else {
-            isCorrect = request.getSelectedAnswer().trim().equalsIgnoreCase(actualCorrectAnswer.trim());
+            isCorrect = normalizeEszett(request.getSelectedAnswer().trim()).equalsIgnoreCase(normalizeEszett(actualCorrectAnswer.trim()));
         }
 
         response.setCorrect(isCorrect);
         return response;
+    }
+
+    private String normalizeEszett(String s) {
+        return s.replace("ß", "ss").replace("ẞ", "SS");
     }
 
     private boolean validateMatchingAnswer(String selectedAnswer, String correctAnswer) {

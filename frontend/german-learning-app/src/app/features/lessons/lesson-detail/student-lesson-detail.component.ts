@@ -158,9 +158,13 @@ export class StudentLessonDetailComponent implements OnInit {
     this.userInput.set(value);
   }
 
+  private normalizeAnswer(s: string): string {
+    return s.replace(/ß/g, 'ss').replace(/ẞ/g, 'SS');
+  }
+
   submitAnswer() {
     const word = this.writingWord();
-    const correct = this.userInput().trim() === word.germanWord;
+    const correct = this.normalizeAnswer(this.userInput().trim()) === this.normalizeAnswer(word.germanWord);
     this.isCorrect.set(correct);
     if (correct) {
       this.correctCount.update(c => c + 1);

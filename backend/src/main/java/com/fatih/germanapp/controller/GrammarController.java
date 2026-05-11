@@ -36,8 +36,12 @@ public class GrammarController {
         GrammarExercise exercise = exerciseRepository.findById(request.getExerciseId())
                 .orElseThrow(() -> new RuntimeException("Exercise not found"));
 
-        boolean correct = request.getUserAnswer().trim().equalsIgnoreCase(exercise.getAnswer().trim());
+        boolean correct = normalizeEszett(request.getUserAnswer().trim()).equalsIgnoreCase(normalizeEszett(exercise.getAnswer().trim()));
         return new GrammarSubmitResponseDTO(correct, exercise.getAnswer());
+    }
+
+    private String normalizeEszett(String s) {
+        return s.replace("ß", "ss").replace("ẞ", "SS");
     }
 
     private GrammarTopicResponseDTO toResponseDTO(GrammarTopic topic) {
