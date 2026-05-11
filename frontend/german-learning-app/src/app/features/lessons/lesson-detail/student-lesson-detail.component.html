@@ -117,5 +117,22 @@
         <button class="nav-arrow down" (click)="next()">↓</button>
     </div>
     }
+
+    <div class="quick-actions">
+        <button class="quick-btn" (click)="startWritingPractice()">
+            <span class="quick-icon">✍️</span>
+            <span class="quick-label">Writing</span>
+        </button>
+        <span class="quick-divider"></span>
+        <button class="quick-btn" (click)="startGrammarPractice()">
+            <span class="quick-icon">📝</span>
+            <span class="quick-label">Grammar</span>
+        </button>
+        <span class="quick-divider"></span>
+        <button class="quick-btn" (click)="startQuiz()">
+            <span class="quick-icon">🧠</span>
+            <span class="quick-label">Quiz</span>
+        </button>
+    </div>
     }
 </div>

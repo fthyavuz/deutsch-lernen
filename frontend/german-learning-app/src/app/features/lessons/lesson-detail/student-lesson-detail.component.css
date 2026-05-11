@@ -437,6 +437,63 @@ app-flashcard {
     background: #e2e8f0;
 }
 
+/* Quick-access bar */
+.quick-actions {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 0.4rem;
+    animation: slideUp 0.5s ease-out;
+    white-space: nowrap;
+}
+
+.quick-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.65);
+    padding: 0.5rem 1.25rem;
+    border-radius: 14px;
+    transition: all 0.15s;
+    min-width: 70px;
+}
+
+.quick-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+.quick-btn:active { transform: scale(0.95); }
+
+.quick-icon { font-size: 1.25rem; line-height: 1; }
+
+.quick-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.quick-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.12);
+    flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
     .header-overlay {
         top: 1rem;
