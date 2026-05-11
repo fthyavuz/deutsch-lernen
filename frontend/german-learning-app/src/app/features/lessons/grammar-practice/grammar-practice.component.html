@@ -1,0 +1,130 @@
+<div class="grammar-view">
+  <div class="header-overlay">
+    <button class="back-btn" (click)="mode() === 'topics' ? goBack() : backToTopics()">←</button>
+    @if (mode() === 'cards' && activeTopic()) {
+    <div class="progress-pill">{{ cardIndex() + 1 }} / {{ activeTopic()!.cards.length }}</div>
+    } @else if (mode() === 'exercises') {
+    <div class="progress-pill">{{ exerciseIndex() + 1 }} / {{ activeExercises().length }}</div>
+    }
+  </div>
+
+  @if (loading()) {
+  <div class="full-center"><div class="spinner"></div><p>Loading grammar...</p></div>
+
+  } @else if (mode() === 'topics') {
+  <!-- Topic Selection -->
+  <div class="topics-container">
+    <div class="topics-card">
+      <h2>Grammar Practice</h2>
+      <p class="topics-subtitle">Choose a topic to study</p>
+      @for (topic of topics(); track topic.id) {
+      <button class="topic-btn" (click)="selectTopic(topic)">
+        <span class="topic-btn-name">{{ topic.name }}</span>
+        <span class="topic-btn-meta">{{ topic.cards.length }} cards · {{ topic.exercises.length }} exercises</span>
+        <span class="topic-btn-arrow">→</span>
+      </button>
+      }
+      @if (topics().length === 0) {
+      <p class="empty-msg">No grammar topics for this lesson yet.</p>
+      }
+    </div>
+  </div>
+
+  } @else if (mode() === 'cards' && currentCard()) {
+  <!-- Rule Card Swipe -->
+  <div class="card-container">
+    <div class="grammar-card">
+      <p class="card-label">Rule Card {{ cardIndex() + 1 }} of {{ activeTopic()!.cards.length }}</p>
+      <h3 class="card-title">{{ currentCard()!.title }}</h3>
+      <p class="card-explanation">{{ currentCard()!.explanation }}</p>
+      @if (currentExamples().length > 0) {
+      <div class="examples-section">
+        <span class="examples-label">Examples</span>
+        @for (ex of currentExamples(); track $index) {
+        <p class="example-sentence">{{ ex }}</p>
+        }
+      </div>
+      }
+      <div class="card-nav">
+        <button class="btn-ghost" (click)="prevCard()" [disabled]="cardIndex() === 0">← Prev</button>
+        <button class="btn-check" (click)="nextCard()">
+          {{ cardIndex() < activeTopic()!.cards.length - 1 ? 'Next →' : 'Start Exercises →' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  } @else if (mode() === 'exercises' && currentExercise()) {
+  <!-- Exercises -->
+  <div class="writing-container">
+    <div class="writing-card">
+      <p class="writing-progress">Exercise {{ exerciseIndex() + 1 }} of {{ activeExercises().length }}</p>
+      <div class="sentence-section">
+        <span class="explanation-label">Fill in the blank</span>
+        <p class="exercise-sentence">{{ currentExercise()!.sentence }}</p>
+        @if (currentExercise()!.hint) {
+        <span class="hint-badge">{{ currentExercise()!.hint }}</span>
+        }
+      </div>
+      @if (!submitted()) {
+      <input class="writing-input" type="text" [value]="userInput()"
+        (input)="setUserInput($any($event.target).value)"
+        (keyup.enter)="userInput().trim() && submitAnswer()"
+        placeholder="Type your answer..." autofocus />
+      <button class="btn-check" (click)="submitAnswer()" [disabled]="!userInput().trim()">Check Answer</button>
+      } @else {
+      <input class="writing-input" [class.input-correct]="isCorrect()" [class.input-wrong]="!isCorrect()"
+        type="text" [value]="userInput()" readonly />
+      @if (isCorrect()) {
+      <div class="feedback feedback-correct">Correct!</div>
+      } @else {
+      <div class="feedback feedback-wrong">
+        <span>The correct answer is:</span>
+        <strong class="correct-word">{{ correctAnswer() }}</strong>
+      </div>
+      }
+      <button class="btn-check" (click)="nextExercise()">
+        {{ exerciseIndex() < activeExercises().length - 1 ? 'Next →' : 'See Results' }}
+      </button>
+      }
+    </div>
+  </div>
+
+  } @else if (mode() === 'exercises-done') {
+  <!-- Round done, wrong answers remain -->
+  <div class="writing-container">
+    <div class="writing-card result-card">
+      <div class="result-icon">📝</div>
+      <h2>Round {{ attemptCount() }} Complete!</h2>
+      <div class="score-display">
+        <span class="score-number">{{ exerciseScore() }}</span>
+        <span class="score-label">out of 100</span>
+      </div>
+      <p class="result-subtitle">{{ correctCount() }} / {{ activeExercises().length }} correct</p>
+      <p class="retry-hint">{{ wrongExercises().length }} exercise{{ wrongExercises().length === 1 ? '' : 's' }} to practice</p>
+      <div class="result-actions">
+        <button class="btn-check" (click)="retryWrong()">Practice Wrong Answers ({{ wrongExercises().length }})</button>
+        <button class="btn-retry" (click)="startExercises()">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  } @else if (mode() === 'exercises-summary') {
+  <!-- All correct summary -->
+  <div class="writing-container">
+    <div class="writing-card result-card">
+      <div class="result-icon">🎉</div>
+      <h2>All Exercises Mastered!</h2>
+      <div class="score-display">
+        <span class="score-number">{{ firstAttemptScore() }}</span>
+        <span class="score-label">first attempt score</span>
+      </div>
+      <p class="result-subtitle">Completed in {{ attemptCount() }} attempt{{ attemptCount() === 1 ? '' : 's' }}</p>
+      <div class="result-actions">
+        <button class="btn-check" (click)="backToTopics()">Back to Topics</button>
+        <button class="btn-retry" (click)="goBack()">Back to Lesson</button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

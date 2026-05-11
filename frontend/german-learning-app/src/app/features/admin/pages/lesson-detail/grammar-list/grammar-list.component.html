@@ -1,0 +1,171 @@
+<div class="grammar-section">
+
+  <!-- Import Panel -->
+  <div class="import-bar">
+    <button class="btn-secondary" (click)="showImport.set(!showImport())">
+      {{ showImport() ? 'Hide Import' : '⬆ Import Grammar JSON' }}
+    </button>
+    <button class="btn-primary" (click)="startAddTopic()">+ Add Topic</button>
+  </div>
+
+  @if (showImport()) {
+  <div class="import-panel">
+    <div class="import-actions">
+      <button class="btn-copy" (click)="copyPrompt()">{{ copied() ? '✓ Copied!' : '📋 Copy AI Prompt' }}</button>
+    </div>
+    <textarea class="import-textarea" [(ngModel)]="jsonContent" placeholder="Paste AI-generated JSON here..."></textarea>
+    @if (importError()) { <p class="error-msg">{{ importError() }}</p> }
+    @if (importSuccess()) { <p class="success-msg">Import successful!</p> }
+    <div class="import-footer">
+      <button class="btn-primary" (click)="onImport()" [disabled]="importing()">
+        {{ importing() ? 'Importing...' : 'Import' }}
+      </button>
+    </div>
+  </div>
+  }
+
+  <!-- Add Topic Form -->
+  @if (editMode() === 'topic' && editId() === null) {
+  <div class="inline-form">
+    <input [(ngModel)]="formName" [ngModel]="formName()" (ngModelChange)="formName.set($event)"
+      placeholder="Topic name (e.g. Akkusativ)" class="form-input" />
+    <div class="form-actions">
+      <button class="btn-primary" (click)="saveTopic()">Save</button>
+      <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+    </div>
+  </div>
+  }
+
+  <!-- Topics List -->
+  @for (topic of topics(); track topic.id) {
+  <div class="topic-block">
+    <div class="topic-header" (click)="toggleTopic(topic.id)">
+      <div class="topic-info">
+        <span class="topic-arrow">{{ expandedTopicId() === topic.id ? '▼' : '▶' }}</span>
+        @if (editMode() === 'topic' && editId() === topic.id) {
+        <input [(ngModel)]="formName" [ngModel]="formName()" (ngModelChange)="formName.set($event)"
+          placeholder="Topic name" class="form-input inline-input" (click)="$event.stopPropagation()" />
+        } @else {
+        <span class="topic-name">{{ topic.name }}</span>
+        <span class="topic-counts">{{ topic.cards.length }} cards · {{ topic.exercises.length }} exercises</span>
+        }
+      </div>
+      <div class="topic-actions" (click)="$event.stopPropagation()">
+        @if (editMode() === 'topic' && editId() === topic.id) {
+        <button class="btn-save" (click)="saveTopic()">Save</button>
+        <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+        } @else {
+        <button class="btn-icon" (click)="startEditTopic(topic)" title="Edit">✏️</button>
+        <button class="btn-icon btn-delete" (click)="deleteTopic(topic.id)" title="Delete">🗑️</button>
+        }
+      </div>
+    </div>
+
+    @if (expandedTopicId() === topic.id) {
+    <div class="topic-body">
+
+      <!-- Cards Section -->
+      <div class="sub-section">
+        <div class="sub-header">
+          <h4>Rule Cards</h4>
+          <button class="btn-small" (click)="startAddCard(topic.id, topic.cards.length)">+ Card</button>
+        </div>
+
+        @for (card of topic.cards; track card.id) {
+        <div class="item-row">
+          @if (editMode() === 'card' && editId() === card.id) {
+          <div class="item-form">
+            <input [ngModel]="formTitle()" (ngModelChange)="formTitle.set($event)" placeholder="Title" class="form-input" />
+            <textarea [ngModel]="formExplanation()" (ngModelChange)="formExplanation.set($event)" placeholder="Explanation" class="form-textarea"></textarea>
+            <input [ngModel]="formExamples()" (ngModelChange)="formExamples.set($event)" placeholder="Examples (pipe-separated)" class="form-input" />
+            <div class="form-actions">
+              <button class="btn-primary" (click)="saveCard()">Save</button>
+              <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+          } @else {
+          <div class="item-content">
+            <span class="item-order">{{ card.orderIndex }}</span>
+            <div class="item-text">
+              <strong>{{ card.title }}</strong>
+              <p>{{ card.explanation }}</p>
+            </div>
+            <div class="item-actions">
+              <button class="btn-icon" (click)="startEditCard(topic.id, card)">✏️</button>
+              <button class="btn-icon btn-delete" (click)="deleteCard(card.id)">🗑️</button>
+            </div>
+          </div>
+          }
+        </div>
+        }
+
+        @if (editMode() === 'card' && editId() === null && editParentId() === topic.id) {
+        <div class="item-form">
+          <input [ngModel]="formTitle()" (ngModelChange)="formTitle.set($event)" placeholder="Title" class="form-input" />
+          <textarea [ngModel]="formExplanation()" (ngModelChange)="formExplanation.set($event)" placeholder="Explanation" class="form-textarea"></textarea>
+          <input [ngModel]="formExamples()" (ngModelChange)="formExamples.set($event)" placeholder="Examples (pipe-separated: sentence1.|sentence2.)" class="form-input" />
+          <div class="form-actions">
+            <button class="btn-primary" (click)="saveCard()">Save</button>
+            <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Exercises Section -->
+      <div class="sub-section">
+        <div class="sub-header">
+          <h4>Exercises</h4>
+          <button class="btn-small" (click)="startAddExercise(topic.id, topic.exercises.length)">+ Exercise</button>
+        </div>
+
+        @for (ex of topic.exercises; track ex.id) {
+        <div class="item-row">
+          @if (editMode() === 'exercise' && editId() === ex.id) {
+          <div class="item-form">
+            <input [ngModel]="formSentence()" (ngModelChange)="formSentence.set($event)" placeholder="Sentence with ___" class="form-input" />
+            <input [ngModel]="formAnswer()" (ngModelChange)="formAnswer.set($event)" placeholder="Answer" class="form-input" />
+            <input [ngModel]="formHint()" (ngModelChange)="formHint.set($event)" placeholder="Hint (optional)" class="form-input" />
+            <div class="form-actions">
+              <button class="btn-primary" (click)="saveExercise()">Save</button>
+              <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+          } @else {
+          <div class="item-content">
+            <span class="item-order">{{ ex.orderIndex }}</span>
+            <div class="item-text">
+              <p>{{ ex.sentence }}</p>
+              @if (ex.hint) { <span class="hint-tag">{{ ex.hint }}</span> }
+            </div>
+            <div class="item-actions">
+              <button class="btn-icon" (click)="startEditExercise(topic.id, ex)">✏️</button>
+              <button class="btn-icon btn-delete" (click)="deleteExercise(ex.id)">🗑️</button>
+            </div>
+          </div>
+          }
+        </div>
+        }
+
+        @if (editMode() === 'exercise' && editId() === null && editParentId() === topic.id) {
+        <div class="item-form">
+          <input [ngModel]="formSentence()" (ngModelChange)="formSentence.set($event)" placeholder="Sentence with ___" class="form-input" />
+          <input [ngModel]="formAnswer()" (ngModelChange)="formAnswer.set($event)" placeholder="Answer" class="form-input" />
+          <input [ngModel]="formHint()" (ngModelChange)="formHint.set($event)" placeholder="Hint (optional)" class="form-input" />
+          <div class="form-actions">
+            <button class="btn-primary" (click)="saveExercise()">Save</button>
+            <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+        }
+      </div>
+
+    </div>
+    }
+  </div>
+  }
+
+  @if (topics().length === 0) {
+  <p class="empty-msg">No grammar topics yet. Import from JSON or add one manually.</p>
+  }
+</div>

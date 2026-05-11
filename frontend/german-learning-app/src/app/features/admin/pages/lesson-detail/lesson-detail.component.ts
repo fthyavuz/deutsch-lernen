@@ -4,10 +4,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminLessonService } from '../../../../shared/services/admin-lesson.service';
 import { VocabularyListComponent } from './vocabulary-list/vocabulary-list.component';
 import { QuizListComponent } from './quiz-list/quiz-list.component';
+import { GrammarListComponent } from './grammar-list/grammar-list.component';
 
 @Component({
     selector: 'app-lesson-detail',
-    imports: [CommonModule, VocabularyListComponent, QuizListComponent],
+    imports: [CommonModule, VocabularyListComponent, QuizListComponent, GrammarListComponent],
     templateUrl: './lesson-detail.component.html',
     styleUrl: './lesson-detail.component.css',
 })
@@ -18,7 +19,7 @@ export class LessonDetailComponent {
 
     lessonId = signal<number>(0);
     lessonTitle = signal<string>('Loading...');
-    activeTab = signal<'vocab' | 'quiz'>('vocab');
+    activeTab = signal<'vocab' | 'quiz' | 'grammar'>('vocab');
 
     ngOnInit() {
         const id = Number(this.route.snapshot.paramMap.get('id'));

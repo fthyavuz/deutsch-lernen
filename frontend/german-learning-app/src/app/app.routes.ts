@@ -51,6 +51,13 @@ export const routes: Routes = [
                 .then(m => m.StudentQuizComponent)
     },
     {
+        path: 'lessons/:id/grammar',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/lessons/grammar-practice/grammar-practice.component')
+                .then(m => m.GrammarPracticeComponent)
+    },
+    {
         path: 'admin',
         canActivate: [authGuard, adminGuard],
         loadChildren: () =>

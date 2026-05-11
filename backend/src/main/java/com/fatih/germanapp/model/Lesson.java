@@ -48,6 +48,10 @@ public class Lesson {
     @JsonIgnoreProperties("lesson")
     private List<UserProgress> userProgressEntries;
 
+    @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("lesson")
+    private List<GrammarTopic> grammarTopics;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_id")
     @JsonIgnoreProperties("lessons")

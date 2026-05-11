@@ -17,6 +17,9 @@
             <button (click)="activeTab.set('quiz')" [class.active]="activeTab() === 'quiz'">
                 <span class="tab-icon">❓</span> Quizzes
             </button>
+            <button (click)="activeTab.set('grammar')" [class.active]="activeTab() === 'grammar'">
+                <span class="tab-icon">📝</span> Grammar
+            </button>
         </div>
 
         <div class="content-body">
@@ -26,12 +29,17 @@
                 <button class="btn-primary" (click)="addVocabulary()">+ Add Word</button>
             </div>
             <app-vocabulary-list [lessonId]="lessonId()"></app-vocabulary-list>
-            } @else {
+            } @else if (activeTab() === 'quiz') {
             <div class="tab-actions">
                 <h3>Lesson Quizzes</h3>
                 <button class="btn-primary" (click)="addQuiz()">+ Add Quiz</button>
             </div>
             <app-quiz-list [lessonId]="lessonId()"></app-quiz-list>
+            } @else {
+            <div class="tab-actions">
+                <h3>Grammar Topics</h3>
+            </div>
+            <app-grammar-list [lessonId]="lessonId()"></app-grammar-list>
             }
         </div>
     </div>
