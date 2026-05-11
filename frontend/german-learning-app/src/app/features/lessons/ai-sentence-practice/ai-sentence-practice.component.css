@@ -62,6 +62,8 @@
 .practice-card {
   background: white; border-radius: 24px; padding: 2rem 2.5rem;
   width: 100%; max-width: 500px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
   display: flex; flex-direction: column; gap: 1.25rem;
   box-shadow: 0 20px 25px -5px rgba(0,0,0,0.4);
   animation: slideUp 0.4s ease-out;
