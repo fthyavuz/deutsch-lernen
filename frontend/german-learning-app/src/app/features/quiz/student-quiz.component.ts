@@ -208,10 +208,11 @@ export class StudentQuizComponent implements OnInit {
 
     findOptionKeyByValue(value: string): string | null {
         const q = this.currentQuestion;
-        if (q.optionA === value) return 'optionA';
-        if (q.optionB === value) return 'optionB';
-        if (q.optionC === value) return 'optionC';
-        if (q.optionD === value) return 'optionD';
+        const v = value.trim().toLowerCase();
+        if (q.optionA?.trim().toLowerCase() === v) return 'optionA';
+        if (q.optionB?.trim().toLowerCase() === v) return 'optionB';
+        if (q.optionC?.trim().toLowerCase() === v) return 'optionC';
+        if (q.optionD?.trim().toLowerCase() === v) return 'optionD';
         return null;
     }
 

@@ -63,7 +63,7 @@ public class QuizController {
         if ("MATCHING".equals(quizQuestion.getType().toString())) {
             isCorrect = validateMatchingAnswer(request.getSelectedAnswer(), actualCorrectAnswer);
         } else {
-            isCorrect = request.getSelectedAnswer().equals(actualCorrectAnswer);
+            isCorrect = request.getSelectedAnswer().trim().equalsIgnoreCase(actualCorrectAnswer.trim());
         }
 
         response.setCorrect(isCorrect);
