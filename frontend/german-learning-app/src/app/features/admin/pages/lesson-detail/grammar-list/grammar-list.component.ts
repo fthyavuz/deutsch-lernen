@@ -2,7 +2,7 @@ import { Component, input, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminGrammarService } from '../../../../../shared/services/admin-grammar.service';
-import { GrammarTopicDTO, GrammarCardDTO, GrammarExerciseDTO } from '../../../../../shared/models/grammar.model';
+import { GrammarTopicDTO, GrammarCardDTO, GrammarExerciseDTO, GrammarTopicImportDTO } from '../../../../../shared/models/grammar.model';
 
 type EditMode = 'none' | 'topic' | 'card' | 'exercise';
 
@@ -42,16 +42,29 @@ export class GrammarListComponent implements OnInit {
   formHint = signal('');
   formOrderIndex = signal(0);
 
+  // Import preview state
+  showPreview = signal(false);
+  previewTopics = signal<GrammarTopicImportDTO[]>([]);
+  editingPreviewExercise = signal<{ topicIdx: number; exIdx: number } | null>(null);
+  previewSentence = '';
+  previewAnswer = '';
+  previewHint = '';
+
   get grammarPrompt(): string {
     return `Act as a German language teaching assistant. Generate grammar topic content for a JSON import.
 
-For each grammar topic, provide:
-- Rule cards (you decide the number — typically 2-4 per topic)
-- Exactly 3 fill-in-the-blank exercises per card (so N cards = N×3 exercises total)
+Rules for exercises:
+- Use ___ (three underscores) for the blank in the sentence
+- The "hint" field MUST always include the BASE / INFINITIVE form of the target word:
+  • Verb → infinitive + tense/person: "schreiben (Infinitiv, 3. Pers. Sg. Präsens)"
+  • Adjective → base form + case/gender: "groß (Adjektiv, Nom., Neutr., indefinit)"
+  • Article → definiteness + gender + case: "definit, mask., Akkusativ"
+  • Noun → nominative singular form: "der Mann (Akkusativ Plural)"
 - All explanations and exercise sentences must be in German
-- Examples should be real, natural German sentences
+- Examples: real, natural German sentences, pipe-separated
+- 2–4 rule cards per topic; exactly 3 exercises per card (N cards × 3 = total exercises)
 
-Return ONLY raw JSON in this exact structure:
+Return ONLY raw JSON — no markdown, no code fences:
 {
   "topics": [
     {
@@ -60,16 +73,28 @@ Return ONLY raw JSON in this exact structure:
         {
           "orderIndex": 1,
           "title": "Was ist der Akkusativ?",
-          "explanation": "Der Akkusativ ist der 4. Fall...",
+          "explanation": "Der Akkusativ ist der 4. Fall und bezeichnet das direkte Objekt.",
           "examples": "Ich sehe den Mann.|Er kauft einen Apfel.|Sie trinkt die Milch."
         }
       ],
       "exercises": [
         {
           "orderIndex": 1,
-          "sentence": "Ich sehe ___ Mann. (der)",
+          "sentence": "Ich sehe ___ Mann.",
           "answer": "den",
-          "hint": "maskulin, definit"
+          "hint": "definit, mask., Akkusativ"
+        },
+        {
+          "orderIndex": 2,
+          "sentence": "Er ___ jeden Tag Sport.",
+          "answer": "macht",
+          "hint": "machen (Infinitiv, 3. Pers. Sg. Präsens)"
+        },
+        {
+          "orderIndex": 3,
+          "sentence": "Das ist ein ___ Auto.",
+          "answer": "rotes",
+          "hint": "rot (Adjektiv, Nom., Neutr., indefinit)"
         }
       ]
     }
@@ -101,18 +126,97 @@ Number of cards per topic: [e.g. 3]`;
     });
   }
 
-  onImport() {
+  // ── Import Preview Flow ───────────────────────────────────────
+
+  parseAndPreview() {
     if (!this.jsonContent.trim()) { this.importError.set('Paste JSON first'); return; }
     try {
       const data = JSON.parse(this.jsonContent);
-      data.lessonId = this.lessonId();
-      this.importing.set(true);
+      if (!data.topics || !Array.isArray(data.topics)) {
+        this.importError.set('JSON must contain a "topics" array');
+        return;
+      }
+      this.previewTopics.set(JSON.parse(JSON.stringify(data.topics)));
+      this.showPreview.set(true);
       this.importError.set(null);
-      this.grammarService.importGrammar(data).subscribe({
-        next: () => { this.importing.set(false); this.importSuccess.set(true); this.jsonContent = ''; this.loadTopics(); setTimeout(() => this.importSuccess.set(false), 3000); },
-        error: (err) => { this.importing.set(false); this.importError.set(err.error?.message || 'Import failed'); }
-      });
-    } catch { this.importError.set('Invalid JSON'); }
+      this.editingPreviewExercise.set(null);
+    } catch {
+      this.importError.set('Invalid JSON');
+    }
+  }
+
+  cancelPreview() {
+    this.showPreview.set(false);
+    this.previewTopics.set([]);
+    this.editingPreviewExercise.set(null);
+  }
+
+  deletePreviewTopic(topicIdx: number) {
+    this.previewTopics.update(t => t.filter((_, i) => i !== topicIdx));
+  }
+
+  deletePreviewCard(topicIdx: number, cardIdx: number) {
+    this.previewTopics.update(topics =>
+      topics.map((t, ti) => ti !== topicIdx ? t : { ...t, cards: t.cards.filter((_, i) => i !== cardIdx) })
+    );
+  }
+
+  deletePreviewExercise(topicIdx: number, exIdx: number) {
+    const current = this.editingPreviewExercise();
+    if (current?.topicIdx === topicIdx && current?.exIdx === exIdx) {
+      this.editingPreviewExercise.set(null);
+    }
+    this.previewTopics.update(topics =>
+      topics.map((t, ti) => ti !== topicIdx ? t : { ...t, exercises: t.exercises.filter((_, i) => i !== exIdx) })
+    );
+  }
+
+  startEditPreviewExercise(topicIdx: number, exIdx: number) {
+    const ex = this.previewTopics()[topicIdx].exercises[exIdx];
+    this.previewSentence = ex.sentence;
+    this.previewAnswer = ex.answer;
+    this.previewHint = ex.hint;
+    this.editingPreviewExercise.set({ topicIdx, exIdx });
+  }
+
+  savePreviewExercise() {
+    const item = this.editingPreviewExercise();
+    if (!item) return;
+    this.previewTopics.update(topics =>
+      topics.map((t, ti) => ti !== item.topicIdx ? t : {
+        ...t,
+        exercises: t.exercises.map((ex, ei) => ei !== item.exIdx ? ex : {
+          ...ex, sentence: this.previewSentence, answer: this.previewAnswer, hint: this.previewHint
+        })
+      })
+    );
+    this.editingPreviewExercise.set(null);
+  }
+
+  cancelPreviewEdit() {
+    this.editingPreviewExercise.set(null);
+  }
+
+  confirmImport() {
+    const data = { lessonId: this.lessonId(), topics: this.previewTopics() };
+    this.importing.set(true);
+    this.importError.set(null);
+    this.grammarService.importGrammar(data).subscribe({
+      next: () => {
+        this.importing.set(false);
+        this.importSuccess.set(true);
+        this.jsonContent = '';
+        this.showPreview.set(false);
+        this.showImport.set(false);
+        this.previewTopics.set([]);
+        this.loadTopics();
+        setTimeout(() => this.importSuccess.set(false), 3000);
+      },
+      error: (err) => {
+        this.importing.set(false);
+        this.importError.set(err.error?.message || 'Import failed');
+      }
+    });
   }
 
   // ── Topic CRUD ──────────────────────────────────────────────

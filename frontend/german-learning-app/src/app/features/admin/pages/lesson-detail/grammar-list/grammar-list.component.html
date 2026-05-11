@@ -10,17 +10,97 @@
 
   @if (showImport()) {
   <div class="import-panel">
+
+    @if (!showPreview()) {
+    <!-- Step 1: Paste JSON -->
     <div class="import-actions">
       <button class="btn-copy" (click)="copyPrompt()">{{ copied() ? '✓ Copied!' : '📋 Copy AI Prompt' }}</button>
     </div>
     <textarea class="import-textarea" [(ngModel)]="jsonContent" placeholder="Paste AI-generated JSON here..."></textarea>
     @if (importError()) { <p class="error-msg">{{ importError() }}</p> }
-    @if (importSuccess()) { <p class="success-msg">Import successful!</p> }
     <div class="import-footer">
-      <button class="btn-primary" (click)="onImport()" [disabled]="importing()">
-        {{ importing() ? 'Importing...' : 'Import' }}
+      <button class="btn-primary" (click)="parseAndPreview()" [disabled]="!jsonContent.trim()">Preview →</button>
+    </div>
+
+    } @else {
+    <!-- Step 2: Preview & Edit -->
+    <div class="preview-header">
+      <h4>Preview — {{ previewTopics().length }} topic{{ previewTopics().length !== 1 ? 's' : '' }}</h4>
+      <button class="btn-ghost" (click)="cancelPreview()">← Back to JSON</button>
+    </div>
+
+    @for (topic of previewTopics(); track $index; let topicIdx = $index) {
+    <div class="preview-topic">
+      <div class="preview-topic-header">
+        <strong class="preview-topic-name">{{ topic.name }}</strong>
+        <span class="topic-counts">{{ topic.cards.length }} cards · {{ topic.exercises.length }} exercises</span>
+        <button class="btn-icon btn-delete" (click)="deletePreviewTopic(topicIdx)" title="Remove topic">🗑️</button>
+      </div>
+
+      @if (topic.cards.length > 0) {
+      <div class="preview-sub">
+        <span class="preview-sub-label">Cards</span>
+        @for (card of topic.cards; track $index; let cardIdx = $index) {
+        <div class="preview-row">
+          <span class="item-order">{{ card.orderIndex }}</span>
+          <div class="preview-row-text">
+            <strong>{{ card.title }}</strong>
+            <p>{{ card.explanation | slice:0:90 }}{{ card.explanation.length > 90 ? '…' : '' }}</p>
+          </div>
+          <button class="btn-icon btn-delete" (click)="deletePreviewCard(topicIdx, cardIdx)" title="Remove card">🗑️</button>
+        </div>
+        }
+      </div>
+      }
+
+      @if (topic.exercises.length > 0) {
+      <div class="preview-sub">
+        <span class="preview-sub-label">Exercises</span>
+        @for (ex of topic.exercises; track $index; let exIdx = $index) {
+        <div class="preview-row">
+          @if (editingPreviewExercise()?.topicIdx === topicIdx && editingPreviewExercise()?.exIdx === exIdx) {
+          <div class="preview-edit-form">
+            <input [(ngModel)]="previewSentence" placeholder="Sentence with ___" class="form-input" />
+            <div class="preview-edit-row">
+              <input [(ngModel)]="previewAnswer" placeholder="Answer" class="form-input" />
+              <input [(ngModel)]="previewHint" placeholder="Hint (base/infinitive form)" class="form-input" />
+            </div>
+            <div class="form-actions">
+              <button class="btn-save" (click)="savePreviewExercise()">Save</button>
+              <button class="btn-ghost" (click)="cancelPreviewEdit()">Cancel</button>
+            </div>
+          </div>
+          } @else {
+          <span class="item-order">{{ ex.orderIndex }}</span>
+          <div class="preview-row-text">
+            <p>{{ ex.sentence }}</p>
+            <div class="preview-tags">
+              <span class="answer-tag">{{ ex.answer }}</span>
+              @if (ex.hint) { <span class="hint-tag">{{ ex.hint }}</span> }
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-icon" (click)="startEditPreviewExercise(topicIdx, exIdx)" title="Edit">✏️</button>
+            <button class="btn-icon btn-delete" (click)="deletePreviewExercise(topicIdx, exIdx)" title="Remove">🗑️</button>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+
+    @if (importError()) { <p class="error-msg">{{ importError() }}</p> }
+    @if (importSuccess()) { <p class="success-msg">Import successful!</p> }
+
+    <div class="import-footer">
+      <button class="btn-primary" (click)="confirmImport()" [disabled]="importing() || previewTopics().length === 0">
+        {{ importing() ? 'Importing...' : 'Confirm Import' }}
       </button>
     </div>
+    }
+
   </div>
   }
 
@@ -125,7 +205,7 @@
           <div class="item-form">
             <input [ngModel]="formSentence()" (ngModelChange)="formSentence.set($event)" placeholder="Sentence with ___" class="form-input" />
             <input [ngModel]="formAnswer()" (ngModelChange)="formAnswer.set($event)" placeholder="Answer" class="form-input" />
-            <input [ngModel]="formHint()" (ngModelChange)="formHint.set($event)" placeholder="Hint (optional)" class="form-input" />
+            <input [ngModel]="formHint()" (ngModelChange)="formHint.set($event)" placeholder="Hint (e.g. machen (Infinitiv, 3. Pers. Sg.))" class="form-input" />
             <div class="form-actions">
               <button class="btn-primary" (click)="saveExercise()">Save</button>
               <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
@@ -151,7 +231,7 @@
         <div class="item-form">
           <input [ngModel]="formSentence()" (ngModelChange)="formSentence.set($event)" placeholder="Sentence with ___" class="form-input" />
           <input [ngModel]="formAnswer()" (ngModelChange)="formAnswer.set($event)" placeholder="Answer" class="form-input" />
-          <input [ngModel]="formHint()" (ngModelChange)="formHint.set($event)" placeholder="Hint (optional)" class="form-input" />
+          <input [ngModel]="formHint()" (ngModelChange)="formHint.set($event)" placeholder="Hint (e.g. machen (Infinitiv, 3. Pers. Sg.))" class="form-input" />
           <div class="form-actions">
             <button class="btn-primary" (click)="saveExercise()">Save</button>
             <button class="btn-ghost" (click)="cancelEdit()">Cancel</button>
