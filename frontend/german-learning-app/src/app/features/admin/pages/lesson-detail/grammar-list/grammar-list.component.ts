@@ -42,7 +42,8 @@ export class GrammarListComponent implements OnInit {
   formHint = signal('');
   formOrderIndex = signal(0);
 
-  readonly GRAMMAR_PROMPT = `Act as a German language teaching assistant. Generate grammar topic content for a JSON import.
+  get grammarPrompt(): string {
+    return `Act as a German language teaching assistant. Generate grammar topic content for a JSON import.
 
 For each grammar topic, provide:
 - Rule cards (you decide the number — typically 2-4 per topic)
@@ -76,9 +77,10 @@ Return ONLY raw JSON in this exact structure:
 }
 
 --- DATA INPUT ---
-Lesson ID: [LESSON_ID_HERE]
+Lesson ID: ${this.lessonId()}
 Grammar topics to cover: [e.g. Akkusativ, Dativ]
 Number of cards per topic: [e.g. 3]`;
+  }
 
   ngOnInit() {
     this.loadTopics();
@@ -93,7 +95,7 @@ Number of cards per topic: [e.g. 3]`;
   }
 
   copyPrompt() {
-    navigator.clipboard.writeText(this.GRAMMAR_PROMPT).then(() => {
+    navigator.clipboard.writeText(this.grammarPrompt).then(() => {
       this.copied.set(true);
       setTimeout(() => this.copied.set(false), 2000);
     });

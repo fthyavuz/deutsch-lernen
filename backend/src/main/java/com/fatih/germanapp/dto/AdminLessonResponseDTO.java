@@ -12,4 +12,5 @@ public class AdminLessonResponseDTO {
     private int lessonOrder;
     private Long levelId;
     private String levelCode;
+    private int grammarTopicCount;
 }

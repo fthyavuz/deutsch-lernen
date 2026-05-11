@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface GrammarTopicRepository extends JpaRepository<GrammarTopic, Long> {
     List<GrammarTopic> findByLessonId(Long lessonId);
+    void deleteByLessonId(Long lessonId);
 }

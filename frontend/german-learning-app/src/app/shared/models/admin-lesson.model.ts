@@ -5,4 +5,5 @@ export interface AdminLessonDTO {
     lessonOrder: number;
     levelId?: number;
     levelCode?: string;
+    grammarTopicCount?: number;
 }

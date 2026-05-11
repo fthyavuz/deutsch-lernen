@@ -24,11 +24,14 @@ public class AdminLessonController {
 
     private final LessonRepository lessonRepository;
     private final com.fatih.germanapp.repository.LevelRepository levelRepository;
+    private final com.fatih.germanapp.repository.GrammarTopicRepository grammarTopicRepository;
 
     public AdminLessonController(LessonRepository lessonRepository,
-            com.fatih.germanapp.repository.LevelRepository levelRepository) {
+            com.fatih.germanapp.repository.LevelRepository levelRepository,
+            com.fatih.germanapp.repository.GrammarTopicRepository grammarTopicRepository) {
         this.lessonRepository = lessonRepository;
         this.levelRepository = levelRepository;
+        this.grammarTopicRepository = grammarTopicRepository;
     }
 
     // CREATE
@@ -104,6 +107,7 @@ public class AdminLessonController {
             response.setLevelId(lesson.getLevel().getId());
             response.setLevelCode(lesson.getLevel().getCode());
         }
+        response.setGrammarTopicCount(grammarTopicRepository.findByLessonId(lesson.getId()).size());
         return response;
     }
 }

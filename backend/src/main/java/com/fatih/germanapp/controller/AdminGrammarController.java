@@ -4,6 +4,7 @@ import com.fatih.germanapp.dto.*;
 import com.fatih.germanapp.exception.ResourceNotFoundException;
 import com.fatih.germanapp.model.*;
 import com.fatih.germanapp.repository.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -128,10 +129,13 @@ public class AdminGrammarController {
 
     // ── Bulk Import ──────────────────────────────────────────
 
+    @Transactional
     @PostMapping("/import")
     public List<GrammarTopicResponseDTO> importGrammar(@RequestBody GrammarImportDTO importDTO) {
         Lesson lesson = lessonRepository.findById(importDTO.getLessonId())
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson not found"));
+
+        topicRepository.deleteByLessonId(lesson.getId());
 
         if (importDTO.getTopics() == null) return List.of();
 
