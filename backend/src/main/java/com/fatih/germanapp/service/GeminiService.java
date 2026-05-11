@@ -86,19 +86,20 @@ public class GeminiService {
 
     private String buildPrompt(String word, String germanExplanation, String userSentence) {
         return String.format("""
-                You are a friendly German language teacher checking a student's sentence.
+                You are a German language teacher giving precise, useful feedback on a student's sentence.
 
                 Word being practiced: "%s"
                 German explanation: "%s"
                 Student's sentence: "%s"
 
-                Check the sentence in 2-3 lines maximum:
-                - Is the German grammar correct?
-                - Is the word "%s" used correctly and naturally?
-                - If there is a mistake, gently correct it with the right version.
-                - If it is good, confirm it with a short encouraging remark.
+                Rules for your response:
+                1. If the sentence is incomplete or does not make sense, say so clearly and give a complete example sentence using "%s".
+                2. If there is a grammar mistake, name the exact error (e.g. wrong case, wrong verb form, missing article) and write the corrected sentence.
+                3. If the word "%s" is not used correctly, explain why and show the correct usage.
+                4. If the sentence is fully correct, confirm it in one line and briefly explain what makes it good (e.g. correct case, natural word order).
 
-                Be warm and encouraging. Write your response in German, with a short English note in parentheses when helpful.
-                """, word, germanExplanation, userSentence, word);
+                Keep your response to 2-3 lines. Write in German. Add a short English translation in parentheses only when the German explanation is complex.
+                Do NOT just say "good start" or "nice try" without giving specific feedback.
+                """, word, germanExplanation, userSentence, word, word);
     }
 }
