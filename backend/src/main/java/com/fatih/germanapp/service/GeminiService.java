@@ -47,7 +47,7 @@ public class GeminiService {
             requestBody.set("contents", contents);
 
             ObjectNode generationConfig = objectMapper.createObjectNode();
-            generationConfig.put("maxOutputTokens", 2000);
+            generationConfig.put("maxOutputTokens", 5000);
             generationConfig.put("temperature", 0.7);
             requestBody.set("generationConfig", generationConfig);
 
