@@ -2,6 +2,8 @@ package com.fatih.germanapp.controller;
 
 import com.fatih.germanapp.dto.AiSentenceRequestDTO;
 import com.fatih.germanapp.dto.AiSentenceResponseDTO;
+import com.fatih.germanapp.dto.StoryScenarioRequestDTO;
+import com.fatih.germanapp.dto.StoryScenarioResponseDTO;
 import com.fatih.germanapp.service.GeminiService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,5 +25,10 @@ public class AiSentenceController {
                 request.getUserSentence()
         );
         return new AiSentenceResponseDTO(feedback);
+    }
+
+    @PostMapping("/story-scenarios")
+    public StoryScenarioResponseDTO getStoryScenarios(@RequestBody StoryScenarioRequestDTO request) {
+        return new StoryScenarioResponseDTO(geminiService.generateStoryScenarios(request.getWords()));
     }
 }

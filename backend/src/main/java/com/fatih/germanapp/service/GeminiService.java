@@ -1,5 +1,7 @@
 package com.fatih.germanapp.service;
 
+import com.fatih.germanapp.dto.StoryScenarioDTO;
+import com.fatih.germanapp.dto.StoryVocabItemDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -13,6 +15,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GeminiService {
@@ -82,6 +86,107 @@ public class GeminiService {
             log.error("Gemini call failed: {}", e.getMessage(), e);
             return "Sorry, I couldn't check your sentence right now. Please try again.";
         }
+    }
+
+    public List<StoryScenarioDTO> generateStoryScenarios(List<StoryVocabItemDTO> words) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return List.of();
+        }
+        try {
+            String prompt = buildScenariosPrompt(words);
+
+            ObjectNode requestBody = objectMapper.createObjectNode();
+            ArrayNode contents = objectMapper.createArrayNode();
+            ObjectNode contentNode = objectMapper.createObjectNode();
+            ArrayNode parts = objectMapper.createArrayNode();
+            ObjectNode textPart = objectMapper.createObjectNode();
+            textPart.put("text", prompt);
+            parts.add(textPart);
+            contentNode.set("parts", parts);
+            contents.add(contentNode);
+            requestBody.set("contents", contents);
+
+            ObjectNode generationConfig = objectMapper.createObjectNode();
+            generationConfig.put("maxOutputTokens", 5000);
+            generationConfig.put("temperature", 0.8);
+            requestBody.set("generationConfig", generationConfig);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(GEMINI_URL + apiKey))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(requestBody)))
+                    .build();
+
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            log.info("Gemini story scenarios HTTP status: {}", response.statusCode());
+
+            JsonNode root = objectMapper.readTree(response.body());
+
+            if (root.has("error")) {
+                log.error("Gemini API error: {}", root.path("error").path("message").asText());
+                return List.of();
+            }
+
+            String rawText = root.path("candidates").get(0)
+                    .path("content").path("parts").get(0)
+                    .path("text").asText("");
+
+            // Strip markdown code fences if Gemini adds them
+            String json = rawText.trim();
+            if (json.startsWith("```")) {
+                json = json.replaceAll("^```[a-z]*\\n?", "").replaceAll("```$", "").trim();
+            }
+
+            JsonNode scenariosNode = objectMapper.readTree(json);
+            List<StoryScenarioDTO> result = new ArrayList<>();
+            for (JsonNode node : scenariosNode) {
+                StoryScenarioDTO dto = new StoryScenarioDTO();
+                dto.setTitle(node.path("title").asText());
+                dto.setPrompt(node.path("prompt").asText());
+                List<String> wordList = new ArrayList<>();
+                for (JsonNode w : node.path("words")) {
+                    wordList.add(w.asText());
+                }
+                dto.setWords(wordList);
+                result.add(dto);
+            }
+            return result;
+
+        } catch (Exception e) {
+            log.error("Gemini story scenarios call failed: {}", e.getMessage(), e);
+            return List.of();
+        }
+    }
+
+    private String buildScenariosPrompt(List<StoryVocabItemDTO> words) {
+        StringBuilder wordList = new StringBuilder();
+        for (StoryVocabItemDTO w : words) {
+            wordList.append("- ").append(w.getGermanWord())
+                    .append(" (").append(w.getEnglishMeaning()).append(")\n");
+        }
+        return String.format("""
+                You are a German language teacher creating writing practice exercises.
+
+                Given the following German vocabulary words, group them into thematic clusters and create a short story scenario for each cluster.
+
+                Vocabulary words:
+                %s
+                Rules:
+                1. Group the words by semantic or thematic similarity (e.g. food, travel, emotions, daily routine, shopping, work, family).
+                2. Each group should contain 5 to 12 words. If there are very few words, make 1-2 scenarios.
+                3. For each group, write a realistic German writing prompt (2-3 sentences) that describes a situation where the student would naturally use all of those words.
+                4. The prompt should be in German and appropriate for A1-B2 learners.
+                5. Return ONLY a valid JSON array — no markdown, no explanation, no code fences.
+
+                Return this exact JSON format:
+                [
+                  {
+                    "title": "Short English title for the scenario",
+                    "prompt": "German writing prompt describing the situation...",
+                    "words": ["germanWord1", "germanWord2", ...]
+                  }
+                ]
+                """, wordList);
     }
 
     private String buildPrompt(String word, String germanExplanation, String userSentence) {

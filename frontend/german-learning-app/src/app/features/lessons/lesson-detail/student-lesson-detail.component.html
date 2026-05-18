@@ -105,6 +105,7 @@
                     <button (click)="restart()" class="btn-refresh">Review Again</button>
                     <button (click)="startWritingPractice()" class="btn-writing">✍️ Writing Practice</button>
                     <button (click)="startGrammarPractice()" class="btn-writing">📝 Grammar Practice</button>
+                    <button (click)="startStoryPractice()" class="btn-writing">📖 Story Practice</button>
                     <button (click)="startQuiz()" class="btn-primary">Take Quiz</button>
                 </div>
             </div>
@@ -137,6 +138,11 @@
         <button class="quick-btn" (click)="startAiSentences()">
             <span class="quick-icon">💬</span>
             <span class="quick-label">AI</span>
+        </button>
+        <span class="quick-divider"></span>
+        <button class="quick-btn" (click)="startStoryPractice()">
+            <span class="quick-icon">📖</span>
+            <span class="quick-label">Story</span>
         </button>
     </div>
     }

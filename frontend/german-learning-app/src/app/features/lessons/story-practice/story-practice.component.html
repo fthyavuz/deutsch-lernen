@@ -1,0 +1,87 @@
+<div class="story-view">
+  <div class="header-overlay">
+    <button class="back-btn" (click)="goBack()">←</button>
+    @if (hasScenarios() && !generating()) {
+    <button class="regenerate-btn" (click)="generate()" [disabled]="generating()">
+      Regenerate
+    </button>
+    }
+  </div>
+
+  @if (loading()) {
+  <div class="full-center">
+    <div class="spinner"></div>
+    <p>Loading words...</p>
+  </div>
+
+  } @else if (vocabularies().length === 0) {
+  <div class="full-center">
+    <p>No words in this lesson yet.</p>
+  </div>
+
+  } @else if (generating()) {
+  <div class="full-center">
+    <div class="spinner"></div>
+    <p>Generating scenarios<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+  </div>
+
+  } @else if (!hasScenarios()) {
+  <div class="full-center">
+    <div class="welcome-card">
+      <div class="welcome-icon">✍️</div>
+      <h2>Story Writing Practice</h2>
+      <p>The AI will group your <strong>{{ vocabularies().length }} words</strong> into thematic scenarios. For each scenario you'll get a writing prompt and a space to write your story.</p>
+      <button class="btn-generate" (click)="generate()">Generate Scenarios</button>
+    </div>
+  </div>
+
+  } @else {
+  <div class="scenarios-container">
+    <div class="scenarios-header">
+      <p class="scenarios-label">Story Writing Practice</p>
+      <p class="scenarios-count">{{ scenarios().length }} scenario{{ scenarios().length !== 1 ? 's' : '' }}</p>
+    </div>
+
+    @for (scenario of scenarios(); track $index) {
+    <div class="scenario-card">
+      <div class="scenario-top">
+        <span class="scenario-number">{{ $index + 1 }}</span>
+        <h3 class="scenario-title">{{ scenario.title }}</h3>
+      </div>
+
+      <div class="scenario-prompt">
+        <span class="prompt-label">Aufgabe</span>
+        <p>{{ scenario.prompt }}</p>
+      </div>
+
+      <div class="word-chips">
+        @for (word of scenario.words; track word) {
+        <span class="chip">{{ word }}</span>
+        }
+      </div>
+
+      <div class="textarea-wrapper">
+        <textarea
+          class="story-input"
+          [value]="userTexts()[$index]"
+          (input)="setUserText($index, $any($event.target).value)"
+          placeholder="Schreib hier deine Geschichte auf Deutsch..."
+          rows="6">
+        </textarea>
+        <div class="word-counter" [class.over-limit]="wordCount(userTexts()[$index]) > 300">
+          {{ wordCount(userTexts()[$index]) }} / 300 words
+        </div>
+      </div>
+
+      <button class="btn-copy" (click)="copyScenario($index)">
+        @if (copiedIndex() === $index) {
+        Copied!
+        } @else {
+        Copy for AI Feedback
+        }
+      </button>
+    </div>
+    }
+  </div>
+  }
+</div>

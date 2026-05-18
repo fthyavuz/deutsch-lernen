@@ -65,6 +65,13 @@ export const routes: Routes = [
                 .then(m => m.AiSentencePracticeComponent)
     },
     {
+        path: 'lessons/:id/story-practice',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/lessons/story-practice/story-practice.component')
+                .then(m => m.StoryPracticeComponent)
+    },
+    {
         path: 'admin',
         canActivate: [authGuard, adminGuard],
         loadChildren: () =>

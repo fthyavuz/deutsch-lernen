@@ -1,0 +1,111 @@
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { VocabularyService } from '../../../shared/services/vocabulary.service';
+import { StoryScenarioService } from '../../../shared/services/story-scenario.service';
+import { VocabularyDTO } from '../../../shared/models/vocabulary.model';
+import { StoryScenario } from '../../../shared/models/story-scenario.model';
+
+const STORAGE_KEY = (lessonId: number) => `story-scenarios-${lessonId}`;
+
+@Component({
+  selector: 'app-story-practice',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './story-practice.component.html',
+  styleUrl: './story-practice.component.css',
+})
+export class StoryPracticeComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private vocabularyService = inject(VocabularyService);
+  private scenarioService = inject(StoryScenarioService);
+
+  loading = signal(true);
+  generating = signal(false);
+  vocabularies = signal<VocabularyDTO[]>([]);
+  scenarios = signal<StoryScenario[]>([]);
+  userTexts = signal<string[]>([]);
+  copiedIndex = signal<number | null>(null);
+
+  private lessonId = 0;
+
+  ngOnInit() {
+    this.lessonId = Number(this.route.snapshot.paramMap.get('id'));
+    this.vocabularyService.getByLesson(this.lessonId).subscribe({
+      next: (data) => {
+        this.vocabularies.set(data);
+        this.loading.set(false);
+        const saved = localStorage.getItem(STORAGE_KEY(this.lessonId));
+        if (saved) {
+          const parsed: StoryScenario[] = JSON.parse(saved);
+          this.scenarios.set(parsed);
+          this.userTexts.set(parsed.map(() => ''));
+        }
+      },
+      error: () => {
+        this.loading.set(false);
+        this.router.navigate(['/404']);
+      }
+    });
+  }
+
+  generate() {
+    if (this.generating()) return;
+    this.generating.set(true);
+    const request = {
+      words: this.vocabularies().map(v => ({
+        germanWord: v.germanWord,
+        englishMeaning: v.englishMeaning,
+        germanExplanation: v.germanExplanation,
+      }))
+    };
+    this.scenarioService.generateScenarios(request).subscribe({
+      next: (res) => {
+        this.scenarios.set(res.scenarios);
+        this.userTexts.set(res.scenarios.map(() => ''));
+        localStorage.setItem(STORAGE_KEY(this.lessonId), JSON.stringify(res.scenarios));
+        this.generating.set(false);
+      },
+      error: () => {
+        this.generating.set(false);
+      }
+    });
+  }
+
+  setUserText(index: number, value: string) {
+    const texts = [...this.userTexts()];
+    texts[index] = value;
+    this.userTexts.set(texts);
+  }
+
+  wordCount(text: string): number {
+    return text.trim() === '' ? 0 : text.trim().split(/\s+/).filter(w => w.length > 0).length;
+  }
+
+  copyScenario(index: number) {
+    const scenario = this.scenarios()[index];
+    const userText = this.userTexts()[index];
+    const text =
+      `Schreibaufgabe: ${scenario.title}\n\n` +
+      `Aufgabe: ${scenario.prompt}\n\n` +
+      `Wörter: ${scenario.words.join(', ')}\n\n` +
+      `Meine Geschichte:\n${userText}\n\n` +
+      `---\n` +
+      `Bitte gib mir Feedback zu meinem deutschen Text. Achte besonders auf Grammatik, Wortstellung und die Verwendung der vorgegebenen Wörter.`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      this.copiedIndex.set(index);
+      setTimeout(() => this.copiedIndex.set(null), 2000);
+    });
+  }
+
+  hasScenarios(): boolean {
+    return this.scenarios().length > 0;
+  }
+
+  goBack() {
+    const levelId = this.route.snapshot.queryParamMap.get('levelId');
+    this.router.navigate([`/lessons/${this.lessonId}`], levelId ? { queryParams: { levelId } } : {});
+  }
+}
