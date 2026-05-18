@@ -29,6 +29,8 @@ public class AiSentenceController {
 
     @PostMapping("/story-scenarios")
     public StoryScenarioResponseDTO getStoryScenarios(@RequestBody StoryScenarioRequestDTO request) {
-        return new StoryScenarioResponseDTO(geminiService.generateStoryScenarios(request.getWords()));
+        return new StoryScenarioResponseDTO(
+            geminiService.generateStoryScenarios(request.getWords(), request.getLevelCode())
+        );
     }
 }

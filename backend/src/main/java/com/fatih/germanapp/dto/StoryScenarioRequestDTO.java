@@ -6,4 +6,5 @@ import java.util.List;
 @Data
 public class StoryScenarioRequestDTO {
     private List<StoryVocabItemDTO> words;
+    private String levelCode;
 }

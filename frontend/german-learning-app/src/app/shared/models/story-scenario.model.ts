@@ -10,4 +10,5 @@ export interface StoryScenarioResponse {
 
 export interface StoryScenarioRequest {
   words: { germanWord: string; englishMeaning: string; germanExplanation: string }[];
+  levelCode?: string;
 }

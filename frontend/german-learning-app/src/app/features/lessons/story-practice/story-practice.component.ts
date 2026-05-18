@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VocabularyService } from '../../../shared/services/vocabulary.service';
 import { StoryScenarioService } from '../../../shared/services/story-scenario.service';
+import { LevelService } from '../../../shared/services/level.service';
 import { VocabularyDTO } from '../../../shared/models/vocabulary.model';
 import { StoryScenario } from '../../../shared/models/story-scenario.model';
 
@@ -20,6 +21,7 @@ export class StoryPracticeComponent implements OnInit {
   private router = inject(Router);
   private vocabularyService = inject(VocabularyService);
   private scenarioService = inject(StoryScenarioService);
+  private levelService = inject(LevelService);
 
   loading = signal(true);
   generating = signal(false);
@@ -30,9 +32,12 @@ export class StoryPracticeComponent implements OnInit {
   copiedIndex = signal<number | null>(null);
 
   private lessonId = 0;
+  private levelCode = '';
 
   ngOnInit() {
     this.lessonId = Number(this.route.snapshot.paramMap.get('id'));
+    const levelId = Number(this.route.snapshot.queryParamMap.get('levelId'));
+
     this.vocabularyService.getByLesson(this.lessonId).subscribe({
       next: (data) => {
         this.vocabularies.set(data);
@@ -49,6 +54,13 @@ export class StoryPracticeComponent implements OnInit {
         this.router.navigate(['/404']);
       }
     });
+
+    if (levelId) {
+      this.levelService.getLevelById(levelId).subscribe({
+        next: (level) => { this.levelCode = level.code; },
+        error: () => {}
+      });
+    }
   }
 
   generate() {
@@ -60,7 +72,8 @@ export class StoryPracticeComponent implements OnInit {
         germanWord: v.germanWord,
         englishMeaning: v.englishMeaning,
         germanExplanation: v.germanExplanation,
-      }))
+      })),
+      levelCode: this.levelCode || undefined,
     };
     this.scenarioService.generateScenarios(request).subscribe({
       next: (res) => {

@@ -88,12 +88,12 @@ public class GeminiService {
         }
     }
 
-    public List<StoryScenarioDTO> generateStoryScenarios(List<StoryVocabItemDTO> words) {
+    public List<StoryScenarioDTO> generateStoryScenarios(List<StoryVocabItemDTO> words, String levelCode) {
         if (apiKey == null || apiKey.isBlank()) {
             return List.of();
         }
         try {
-            String prompt = buildScenariosPrompt(words);
+            String prompt = buildScenariosPrompt(words, levelCode);
 
             ObjectNode requestBody = objectMapper.createObjectNode();
             ArrayNode contents = objectMapper.createArrayNode();
@@ -162,35 +162,46 @@ public class GeminiService {
         }
     }
 
-    private String buildScenariosPrompt(List<StoryVocabItemDTO> words) {
+    private String buildScenariosPrompt(List<StoryVocabItemDTO> words, String levelCode) {
         StringBuilder wordList = new StringBuilder();
         for (StoryVocabItemDTO w : words) {
             wordList.append("- ").append(w.getGermanWord())
                     .append(" (").append(w.getEnglishMeaning()).append(")\n");
         }
+        String level = (levelCode != null && !levelCode.isBlank()) ? levelCode : "A1";
+        String levelGuidance = switch (level.toUpperCase()) {
+            case "A1" -> "The student is a complete beginner (A1). Use only very simple, everyday situations. Short sentences. Basic vocabulary only in the prompt.";
+            case "A2" -> "The student is at A2 level. Use simple, familiar situations. Keep prompts short and clear.";
+            case "B1" -> "The student is at B1 level. Use everyday situations with moderate complexity. Allow for a few connecting sentences.";
+            case "B2" -> "The student is at B2 level. Use realistic situations with some nuance. The prompt can include mild complexity.";
+            default   -> "Keep the prompt simple and clear.";
+        };
         return String.format("""
-                You are a German language teacher creating writing practice exercises.
+                You are a German language teacher creating short writing exercises for a student.
 
-                Given the following German vocabulary words, group them into thematic clusters and create a short story scenario for each cluster.
+                Student level: %s
+                %s
+
+                Group the following vocabulary words into thematic clusters and write one simple scenario prompt per cluster.
 
                 Vocabulary words:
                 %s
                 Rules:
-                1. Group the words by semantic or thematic similarity (e.g. food, travel, emotions, daily routine, shopping, work, family).
-                2. Each group should contain 5 to 12 words. If there are very few words, make 1-2 scenarios.
-                3. For each group, write a realistic German writing prompt (2-3 sentences) that describes a situation where the student would naturally use all of those words.
-                4. The prompt should be in German and appropriate for A1-B2 learners.
+                1. Group words by theme (e.g. food, travel, daily routine, shopping, family).
+                2. Each group should have 5 to 12 words. Make 1-2 scenarios if there are few words.
+                3. Write a short, simple German writing prompt (1-2 sentences max) for each group. Describe a realistic everyday situation.
+                4. Keep the prompt easy to understand — the student must be able to write about it in 100-300 words.
                 5. Return ONLY a valid JSON array — no markdown, no explanation, no code fences.
 
                 Return this exact JSON format:
                 [
                   {
-                    "title": "Short English title for the scenario",
-                    "prompt": "German writing prompt describing the situation...",
+                    "title": "Short English title",
+                    "prompt": "Simple German writing prompt...",
                     "words": ["germanWord1", "germanWord2", ...]
                   }
                 ]
-                """, wordList);
+                """, level, levelGuidance, wordList);
     }
 
     private String buildPrompt(String word, String germanExplanation, String userSentence) {
