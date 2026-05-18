@@ -23,6 +23,7 @@ export class StoryPracticeComponent implements OnInit {
 
   loading = signal(true);
   generating = signal(false);
+  errorMessage = signal<string | null>(null);
   vocabularies = signal<VocabularyDTO[]>([]);
   scenarios = signal<StoryScenario[]>([]);
   userTexts = signal<string[]>([]);
@@ -53,6 +54,7 @@ export class StoryPracticeComponent implements OnInit {
   generate() {
     if (this.generating()) return;
     this.generating.set(true);
+    this.errorMessage.set(null);
     const request = {
       words: this.vocabularies().map(v => ({
         germanWord: v.germanWord,
@@ -62,13 +64,18 @@ export class StoryPracticeComponent implements OnInit {
     };
     this.scenarioService.generateScenarios(request).subscribe({
       next: (res) => {
+        this.generating.set(false);
+        if (!res.scenarios || res.scenarios.length === 0) {
+          this.errorMessage.set('The AI could not generate scenarios. Please try again.');
+          return;
+        }
         this.scenarios.set(res.scenarios);
         this.userTexts.set(res.scenarios.map(() => ''));
         localStorage.setItem(STORAGE_KEY(this.lessonId), JSON.stringify(res.scenarios));
-        this.generating.set(false);
       },
       error: () => {
         this.generating.set(false);
+        this.errorMessage.set('Something went wrong. Please check your connection and try again.');
       }
     });
   }

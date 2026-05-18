@@ -31,7 +31,12 @@
       <div class="welcome-icon">✍️</div>
       <h2>Story Writing Practice</h2>
       <p>The AI will group your <strong>{{ vocabularies().length }} words</strong> into thematic scenarios. For each scenario you'll get a writing prompt and a space to write your story.</p>
-      <button class="btn-generate" (click)="generate()">Generate Scenarios</button>
+      @if (errorMessage()) {
+      <div class="error-box">{{ errorMessage() }}</div>
+      }
+      <button class="btn-generate" (click)="generate()">
+        {{ errorMessage() ? 'Try Again' : 'Generate Scenarios' }}
+      </button>
     </div>
   </div>
 

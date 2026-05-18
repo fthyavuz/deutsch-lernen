@@ -131,11 +131,15 @@ public class GeminiService {
                     .path("content").path("parts").get(0)
                     .path("text").asText("");
 
-            // Strip markdown code fences if Gemini adds them
+            // Extract the JSON array from the response, stripping any markdown or extra text
             String json = rawText.trim();
-            if (json.startsWith("```")) {
-                json = json.replaceAll("^```[a-z]*\\n?", "").replaceAll("```$", "").trim();
+            int start = json.indexOf('[');
+            int end = json.lastIndexOf(']');
+            if (start == -1 || end == -1 || end < start) {
+                log.error("Gemini response did not contain a JSON array. Raw: {}", rawText);
+                return List.of();
             }
+            json = json.substring(start, end + 1);
 
             JsonNode scenariosNode = objectMapper.readTree(json);
             List<StoryScenarioDTO> result = new ArrayList<>();
